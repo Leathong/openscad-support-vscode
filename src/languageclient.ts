@@ -23,19 +23,19 @@ export class ScadClient {
             serverPath = path.join(context.extensionPath, "server/openscad-language-server.exe");
         }
     
-        // this.server = child.spawn(serverPath);
+        this.server = child.spawn(serverPath);
     
-        // this.server.stderr?.on('data', function (data: Buffer) {
-        //     outputChannel.append(
-        //         data.toString()
-        //     );
-        // });
+        this.server.stderr?.on('data', function (data: Buffer) {
+            outputChannel.append(
+                data.toString()
+            );
+        });
     
-        // this.server.stdout?.on('data', (data: Buffer) => {
-        //     if (!this.langclient) {
-        //         outputChannel.append(
-        //             data.toString()
-        //         );
+        this.server.stdout?.on('data', (data: Buffer) => {
+            if (!this.langclient) {
+                outputChannel.append(
+                    data.toString()
+                );
     
                 const connectionInfo: net.TcpSocketConnectOpts = {
                     port: 3245, // 0xcad
@@ -92,8 +92,8 @@ export class ScadClient {
                     this.clientReady = true;
                     this.onDidChangeConfiguration();
                 });
-        //     }
-        // });
+            }
+        });
     }
 
     public static onDidChangeConfiguration() {
