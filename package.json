@@ -1,9 +1,9 @@
 {
-    "name": "openscad",
-    "displayName": "OpenSCAD",
-    "description": "OpenSCAD highlighting, snippets, and more for VSCode!",
-    "version": "1.1.1",
-    "publisher": "Antyos",
+    "name": "openscad-language-support",
+    "displayName": "OpenSCAD Language Support",
+    "description": "OpenSCAD highlighting, auto-completion, and more for VSCode!",
+    "version": "1.0.0",
+    "publisher": "Leathong",
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
     "engines": {
@@ -17,24 +17,18 @@
         "openscad",
         "scad"
     ],
-    "homepage": "https://github.com/Antyos/vscode-openscad/blob/master/README.md",
+    "homepage": "https://github.com/Leathong/openscad-support-vscode",
     "bugs": {
-        "url": "https://github.com/Antyos/vscode-openscad/issues"
+        "url": "https://github.com/Leathong/openscad-support-vscode/issues"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/Antyos/vscode-openscad"
+        "url": "https://github.com/Leathong/openscad-support-vscode"
     },
     "activationEvents": [
         "onLanguage:scad",
         "workspaceContains:**/*.scad",
         "onCommand:openscad.preview",
-        "onCommand:openscad.kill",
-        "onCommand:openscad.autoKill",
-        "onCommand:openscad.killAll",
-        "onCommand:openscad.exportByType",
-        "onCommand:openscad.exportByConfig",
-        "onCommand:openscad.exportWithSaveDialogue",
         "onCommand:openscad.cheatsheet",
         "onWebviewPanel:cheatsheet"
     ],
@@ -54,56 +48,6 @@
                     "light": "./media/icons/preview-light.svg",
                     "dark": "./media/icons/preview-dark.svg"
                 }
-            },
-            {
-                "command": "openscad.kill",
-                "title": "Kill OpenSCAD Previews",
-                "category": "OpenSCAD",
-                "icon": {
-                    "light": "./media/icons/kill-light.svg",
-                    "dark": "./media/icons/kill-dark.svg"
-                }
-            },
-            {
-                "command": "openscad.autoKill",
-                "title": "Kill OpenSCAD Previews",
-                "category": "OpenSCAD",
-                "icon": {
-                    "light": "./media/icons/kill-light.svg",
-                    "dark": "./media/icons/kill-dark.svg"
-                }
-            },
-            {
-                "command": "openscad.killAll",
-                "title": "Kill All OpenSCAD Previews",
-                "category": "OpenSCAD"
-            },
-            {
-                "command": "openscad.exportByType",
-                "title": "Export Model (Select File Type)",
-                "category": "OpenSCAD",
-                "icon": {
-                    "light": "./media/icons/export-light.svg",
-                    "dark": "./media/icons/export-dark.svg"
-                }
-            },
-            {
-                "command": "openscad.exportByConfig",
-                "title": "Export Model",
-                "category": "OpenSCAD",
-                "icon": {
-                    "light": "./media/icons/export-light.svg",
-                    "dark": "./media/icons/export-dark.svg"
-                }
-            },
-            {
-                "command": "openscad.exportWithSaveDialogue",
-                "title": "Export Model with Save Dialogue",
-                "category": "OpenSCAD",
-                "icon": {
-                    "light": "./media/icons/export-light.svg",
-                    "dark": "./media/icons/export-dark.svg"
-                }
             }
         ],
         "menus": {
@@ -112,18 +56,6 @@
                     "command": "openscad.preview",
                     "when": "editorLangId == scad && config.openscad.interface.showPreviewIconInEditorTitleMenu",
                     "group": "navigation@-1.2"
-                },
-                {
-                    "command": "openscad.autoKill",
-                    "alt": "openscad.kill",
-                    "when": "editorLangId == scad && config.openscad.interface.showKillIconInEditorTitleMenu",
-                    "group": "navigation@-1.3"
-                },
-                {
-                    "command": "openscad.exportByConfig",
-                    "alt": "openscad.exportWithSaveDialogue",
-                    "when": "editorLangId == scad && config.openscad.interface.showExportIconInEditorTitleMenu",
-                    "group": "navigation@-1.1"
                 }
             ],
             "editor/title/context": [
@@ -131,12 +63,6 @@
                     "command": "openscad.preview",
                     "when": "resourceLangId == scad && config.openscad.interface.showPreviewInContextMenus && config.openscad.interface.showCommandsInEditorTitleContextMenu",
                     "group": "navigation@0"
-                },
-                {
-                    "command": "openscad.exportByConfig",
-                    "alt": "openscad.exportWithSaveDialogue",
-                    "when": "resourceLangId == scad && config.openscad.interface.showExportInContextMenus && config.openscad.interface.showCommandsInEditorTitleContextMenu",
-                    "group": "navigation@1"
                 }
             ],
             "explorer/context": [
@@ -144,41 +70,11 @@
                     "command": "openscad.preview",
                     "when": "resourceLangId == scad && config.openscad.interface.showPreviewInContextMenus && config.openscad.interface.showCommandsInExplorerContextMenu",
                     "group": "navigation@-1.3"
-                },
-                {
-                    "command": "openscad.exportByConfig",
-                    "alt": "openscad.exportWithSaveDialogue",
-                    "when": "resourceLangId == scad && config.openscad.interface.showExportInContextMenus && config.openscad.interface.showCommandsInExplorerContextMenu",
-                    "group": "navigation@-1.1"
                 }
             ],
             "commandPalette": [
                 {
                     "command": "openscad.preview",
-                    "when": "editorLangId == scad || resourceLangId == scad"
-                },
-                {
-                    "command": "openscad.kill",
-                    "when": "areOpenScadPreviews"
-                },
-                {
-                    "command": "openscad.autoKill",
-                    "when": "never"
-                },
-                {
-                    "command": "openscad.killAll",
-                    "when": "areOpenScadPreviews"
-                },
-                {
-                    "command": "openscad.exportByType",
-                    "when": "editorLangId == scad || resourceLangId == scad"
-                },
-                {
-                    "command": "openscad.exportWithSaveDialogue",
-                    "when": "editorLangId == scad || resourceLangId == scad"
-                },
-                {
-                    "command": "openscad.exportByConfig",
                     "when": "editorLangId == scad || resourceLangId == scad"
                 }
             ]
@@ -213,6 +109,14 @@
         "configuration": {
             "title": "OpenSCAD",
             "properties": {
+                "openscad.LSP.searchPaths": {
+                    "type":"array",
+                    "default": [],
+                    "items": {
+                        "type":"string"
+                    },
+                    "description": "search paths for libs"
+                },
                 "openscad.launchPath": {
                     "type": "string",
                     "default": "",
@@ -224,61 +128,10 @@
                     "default": 0,
                     "markdownDescription": "The maximum number of instances of OpenSCAD allowed.\nSet to `0` for no limit. Instances include any open previews and any active exports.\n> _Note:_ If you decrease this to less than the number of open editors, they will remain open but you will not be able to open more."
                 },
-                "openscad.showKillMessage": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Show message when a preview is killed."
-                },
-                "openscad.export.preferredExportFileExtension": {
-                    "type": "string",
-                    "enum": [
-                        "none",
-                        "stl",
-                        "off",
-                        "amf",
-                        "3mf",
-                        "csg",
-                        "dxf",
-                        "svg",
-                        "png",
-                        "echo",
-                        "ast",
-                        "term",
-                        "nef3",
-                        "nefdbg"
-                    ],
-                    "default": "stl",
-                    "markdownDescription": "Preferred file extension to use when exporting using the **Export Model** button in the editor title bar. Set to `none` to select the file extension each time."
-                },
-                "openscad.export.autoNamingFormat": {
-                    "type": "string",
-                    "default": "${fileBasenameNoExtension}.${exportExtension}",
-                    "markdownDescription": "The default format pattern to name exported files. Based on variables used in `tasks.json`. For a full list of variables, see the wiki page [here](https://github.com/Antyos/vscode-openscad/wiki/Auto-Exporting). Commonly used variables include:\n- `${workspaceFolder}` - The path of the folder open in VS Code\n- `${fileBasenameNoExtension}` - The current opened file's basename with no file extension\n- `${exportExtension}` - The file extension used in the export\n- `${#}` - Auto versioning placeholder. Starts at '1' and increments each time you export a file. Prevents accidental overrides.\n\nNote: If the path is not specified absolutely, the extension assumes it starts in the location of the `.scad` file being exported."
-                },
-                "openscad.export.useAutoNamingExport": {
-                    "type": "boolean",
-                    "default": false,
-                    "markdownDescription": "When enabled, the standard action of **Export Model** will automatically choose a name based on the configuration `openscad.export.autoNamingFormat` and export without a save dialogue.\n\nNote that when this option is enabled, the save dialogue can still be opened by `alt + clicking` the **Export Model** button. Also, the save dialogue can always be accessed by running **Export Model with Save Dialogue** through the command palette."
-                },
-                "openscad.export.useAutoNamingInSaveDialogues": {
-                    "type": "boolean",
-                    "default": false,
-                    "markdownDescription": "The default name of to-be exported files in save dialouges will be generated according to the config of `openscad.export.autoNamingFormat` instead of using the original filename."
-                },
                 "openscad.interface.showPreviewIconInEditorTitleMenu": {
                     "type": "boolean",
                     "default": true,
                     "markdownDescription": "Show **Preview in OpenSCAD** button in editor title menu (right side of tabs)."
-                },
-                "openscad.interface.showKillIconInEditorTitleMenu": {
-                    "type": "boolean",
-                    "default": true,
-                    "markdownDescription": "Show **Kill OpenSCAD Previews** button in editor title menu (right side of tabs)."
-                },
-                "openscad.interface.showExportIconInEditorTitleMenu": {
-                    "type": "boolean",
-                    "default": true,
-                    "markdownDescription": "Show **Export** button in editor title menu (right side of tabs)."
                 },
                 "openscad.interface.showCommandsInEditorTitleContextMenu": {
                     "type": "boolean",
@@ -294,11 +147,6 @@
                     "type": "boolean",
                     "default": true,
                     "markdownDescription": "Show **Preview in OpenSCAD** command in context menus."
-                },
-                "openscad.interface.showExportInContextMenus": {
-                    "type": "boolean",
-                    "default": true,
-                    "markdownDescription": "Show **Export Model** command in context menus."
                 },
                 "openscad.cheatsheet.displayInStatusBar": {
                     "type": "string",
@@ -350,11 +198,6 @@
                 "command": "openscad.preview",
                 "key": "f5",
                 "when": "resourceLangId == scad"
-            },
-            {
-                "command": "openscad.exportByConfig",
-                "key": "f6",
-                "when": "resourceLangId == scad"
             }
         ]
     },
@@ -371,21 +214,22 @@
         "@types/jsdom": "^16.2.10",
         "@types/node": "^12.12.6",
         "@types/vscode": "^1.44.0",
-        "@typescript-eslint/eslint-plugin": "^4.26.0",
-        "@typescript-eslint/parser": "^4.26.0",
-        "eslint": "^7.27.0",
+        "@typescript-eslint/eslint-plugin": "^5.2.0",
+        "@typescript-eslint/parser": "^5.0.0",
+        "eslint": "^8.0.0",
         "eslint-config-prettier": "^7.2.0",
         "eslint-config-vscode-ext": "^1.0.0",
         "eslint-plugin-prettier": "^3.4.0",
         "js-yaml": "^3.14.1",
         "prettier": "^2.3.0",
-        "typescript": "^3.9.9",
+        "typescript": "^4.0.0",
         "vsce": "^1.88.0"
     },
     "dependencies": {
         "command-exists": "^1.2.9",
         "escape-string-regexp": "^4.0.0",
         "jsdom": "^16.6.0",
-        "ste-signals": "^1.7.3"
+        "ste-signals": "^1.7.3",
+        "vscode-languageclient": "^7.0.0"
     }
 }

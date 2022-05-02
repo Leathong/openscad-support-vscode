@@ -10,9 +10,7 @@ export interface ScadConfig {
     lastOpenscadPath?: string;
     maxInstances?: number;
     showKillMessage?: boolean;
-    preferredExportFileExtension?: string;
     autoNamingFormat?: string;
-    useAutoNamingExport?: boolean;
     useAutoNamingInSaveDialogues?: boolean;
     displayInStatusBar?: string;
     colorScheme?: string;

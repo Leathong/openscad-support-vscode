@@ -13,5 +13,4 @@ out/
 # Log files
 *.log
 
-# Extension releases
-*.vsix
+package-lock.json

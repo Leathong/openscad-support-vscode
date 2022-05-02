@@ -7,6 +7,7 @@
 import * as vscode from 'vscode';
 import { Cheatsheet } from './cheatsheet';
 import { PreviewManager } from './previewManager';
+import { ScadClient } from './languageclient';
 import { DEBUG } from './config';
 
 // New launch object
@@ -26,41 +27,6 @@ export function activate(context: vscode.ExtensionContext): void {
         vscode.commands.registerCommand(
             'openscad.preview',
             (mainUri, allUris) => previewManager.openFile(mainUri, allUris)
-        )
-    );
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            'openscad.exportByType',
-            (mainUri, allUris) => previewManager.exportFile(mainUri, allUris)
-        )
-    );
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            'openscad.exportByConfig',
-            (mainUri, allUris) =>
-                previewManager.exportFile(mainUri, allUris, 'auto')
-        )
-    );
-    context.subscriptions.push(
-        vscode.commands.registerCommand(
-            'openscad.exportWithSaveDialogue',
-            (mainUri, allUris) =>
-                previewManager.exportFile(mainUri, allUris, 'auto', true)
-        )
-    );
-    context.subscriptions.push(
-        vscode.commands.registerCommand('openscad.kill', () =>
-            previewManager.kill()
-        )
-    );
-    context.subscriptions.push(
-        vscode.commands.registerCommand('openscad.autoKill', () =>
-            previewManager.kill(true)
-        )
-    );
-    context.subscriptions.push(
-        vscode.commands.registerCommand('openscad.killAll', () =>
-            previewManager.killAll()
         )
     );
 
@@ -92,6 +58,8 @@ export function activate(context: vscode.ExtensionContext): void {
             },
         });
     }
+
+    ScadClient.startLanguageClient(context);
 }
 
 // Called when extension is deactivated
@@ -107,5 +75,11 @@ function onDidChangeConfiguration() {
     const config = vscode.workspace.getConfiguration('openscad'); // Get new config
     Cheatsheet.onDidChangeConfiguration(config); // Update the cheatsheet with new config
     previewManager.onDidChangeConfiguration(config); // Update launcher with new config
+    ScadClient.onDidChangeConfiguration();
     // vscode.window.showInformationMessage("Config change!"); // DEBUG
+}
+
+
+export function deactivate(): Thenable<void> | undefined {
+    return ScadClient.stopLanguageServer();
 }

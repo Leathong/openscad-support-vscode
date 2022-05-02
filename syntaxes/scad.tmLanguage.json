@@ -433,15 +433,6 @@
       "captures": {
         "1": {
           "name": "keyword.control.$2.scad"
-        },
-        "3": {
-          "name": "string.quoted.other.lt-gt.include.scad"
-        },
-        "4": {
-          "name": "punctuation.definition.string.begin.scad"
-        },
-        "5": {
-          "name": "punctuation.definition.string.begin.scad"
         }
       }
     },
