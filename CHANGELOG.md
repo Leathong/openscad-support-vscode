@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.0.4](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.0.4) (2022-05-04)
+
+### fix
+- remove semicolon at end of include/use statement
+
+### add
+- add document symbols information support
+
 ## [v1.0.3](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.0.3) (2022-05-02)
 
 ### fix

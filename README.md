@@ -2,7 +2,7 @@
 
 This extension isnpired by and build upon [Antyos/vscode-openscad](https://github.com/Antyos/vscode-openscad).
 
-The main work is to add a language server, so that the extension can auto-complete code and paths, jump to definitions, and display function/module signatures when the mouse hovers, almost everything you need.
+The main work is to add a language server, so that the extension can auto-complete code and paths, jump to definitions, document symbols information('cmd + shift + o' on Mac), and display function/module signatures when the mouse hovers, almost everything you need.
 
 The extension avalible on Mac and Windows.
 
