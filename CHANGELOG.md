@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.0.5](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.0.5) (2022-05-04)
+
+### add
+- add linux server
+
 ## [v1.0.4](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.0.4) (2022-05-04)
 
 ### fix

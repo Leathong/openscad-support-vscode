@@ -9,7 +9,6 @@ import * as path from 'path';
 import { ScadConfig, DEBUG } from './config';
 import { Preview } from './preview';
 import { PreviewStore } from './previewStore';
-import { VariableResolver } from './variableResolver';
 
 // PreviewItems used for `scad.kill` quick pick menu
 class PreviewItem implements vscode.QuickPickItem {

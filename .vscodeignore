@@ -18,6 +18,7 @@ tsconfig.json
 # Typescript files
 src/
 out/*.js.map
+*.vsix
 
 # Tests
 test/

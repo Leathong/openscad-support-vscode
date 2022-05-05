@@ -1,8 +1,8 @@
 {
     "name": "openscad-language-support",
     "displayName": "OpenSCAD Language Support",
-    "description": "OpenSCAD highlighting, auto-completion, and more for VSCode!",
-    "version": "1.0.4",
+    "description": "OpenSCAD language server, provide highlight, auto-completion, document symbols, and more for VSCode!",
+    "version": "1.0.5",
     "publisher": "Leathong",
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",

@@ -1,16 +1,24 @@
-# OpenSCAD for VS Code
+# OpenSCAD Language Support
 
-This extension isnpired by and build upon [Antyos/vscode-openscad](https://github.com/Antyos/vscode-openscad).
+Visual Studio Code extension utilizing the [OpenSCAD language server](https://github.com/Leathong/openscad-LSP.git)， provide language support for OpenSCAD. The extension avalible on Mac and Windows. There is a server on linux, but not tested. If you like this extension, please light up the stars in GitHub.
 
-The main work is to add a language server, so that the extension can auto-complete code and paths, jump to definitions, document symbols information('cmd + shift + o' on Mac), and display function/module signatures when the mouse hovers, almost everything you need.
-
-The extension avalible on Mac and Windows.
-
-The next thing is add a formatter. If you like this extension, please light up the stars in GitHub.
-
-Project is available at: <https://github.com/Leathong/openscad-support-vscode>
-
+Project is available at: <https://github.com/Leathong/openscad-support-vscode>  
 The language server is write in rust, project at <https://github.com/Leathong/openscad-LSP.git>
+
+## Features
+
+- jump to definition
+- code auto-completion
+- include auto-completion
+- document symbos (*cmd + shift + o* on Mac)
+- hover information
+- simple error diagnosis
+- preview and CheatSheet (from [OpenSCAD language server](https://github.com/Leathong/openscad-LSP.git))
+
+
+## TODO
+- add a formatter. 
+- symbol rename.
 
 ## Usage
 
