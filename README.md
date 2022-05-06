@@ -13,7 +13,7 @@ The language server is write in rust, project at <https://github.com/Leathong/op
 - document symbos (*cmd + shift + o* on Mac)
 - hover information
 - simple error diagnosis
-- preview and CheatSheet (from [OpenSCAD language server](https://github.com/Leathong/openscad-LSP.git))
+- preview and CheatSheet (from [vscode-openscad](https://github.com/Antyos/vscode-openscad))
 
 
 ## TODO
