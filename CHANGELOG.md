@@ -1,5 +1,10 @@
 # Changelog
 
+## [v1.0.7](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.0.7) (2022-05-08)
+
+### fix
+- Fixes the issue that doesn't work for "use statement"
+
 ## [v1.0.5](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.0.5) (2022-05-04)
 
 ### add
