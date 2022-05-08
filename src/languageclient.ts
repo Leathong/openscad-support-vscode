@@ -36,11 +36,10 @@ export class ScadClient {
         });
     
         this.server.stdout?.on('data', (data: Buffer) => {
+            outputChannel.append(
+                data.toString()
+            );
             if (!this.langclient) {
-                outputChannel.append(
-                    data.toString()
-                );
-    
                 const connectionInfo: net.TcpSocketConnectOpts = {
                     port: 3245, // 0xcad
                     host: 'localhost',
