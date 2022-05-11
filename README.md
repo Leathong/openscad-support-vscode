@@ -5,6 +5,8 @@ Visual Studio Code extension utilizing the [OpenSCAD language server](https://gi
 Project is available at: <https://github.com/Leathong/openscad-support-vscode>  
 The language server is write in rust, project at <https://github.com/Leathong/openscad-LSP.git>
 
+![screen record](media/screen_record.gif)
+
 ## Features
 
 - jump to definition
