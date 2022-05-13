@@ -9,6 +9,7 @@ The language server is write in rust, project at <https://github.com/Leathong/op
 
 ## Features
 
+- formatter, you need install clang-format yourself
 - jump to definition
 - code auto-completion
 - include auto-completion
@@ -19,12 +20,11 @@ The language server is write in rust, project at <https://github.com/Leathong/op
 
 
 ## TODO
-- add a formatter. 
 - symbol rename.
 
 ## Usage
 
-The extension will read OPENSCADPATH Environment Variable to point to the library(s), you can also add paths to the setting `openscad.LSP.searchPaths`.
+The extension will read OPENSCADPATH Environment Variable to point to the library(s), you can also add paths to the setting `scad-lsp.searchPaths`.
 
 For more information, see: [Using an external Editor with OpenSCAD](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Using_an_external_Editor_with_OpenSCAD)
 

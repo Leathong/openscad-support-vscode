@@ -8,14 +8,6 @@
 export interface ScadConfig {
     openscadPath?: string;
     lastOpenscadPath?: string;
-    maxInstances?: number;
-    showKillMessage?: boolean;
-    autoNamingFormat?: string;
-    useAutoNamingInSaveDialogues?: boolean;
-    displayInStatusBar?: string;
-    colorScheme?: string;
-    lastColorScheme?: string;
-    openToSide?: string;
 }
 
 // DEBUG variable. Set to false when compiling for release to disable all console logging

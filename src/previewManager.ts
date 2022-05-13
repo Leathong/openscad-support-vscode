@@ -85,14 +85,6 @@ export class PreviewManager {
     ): void {
         // Update configuration
         this.config.openscadPath = config.get<string>('launchPath');
-        this.config.maxInstances = config.get<number>('maxInstances');
-
-        this.config.autoNamingFormat = config.get<string>(
-            'export.autoNamingFormat'
-        );
-        this.config.useAutoNamingInSaveDialogues = config.get<boolean>(
-            'export.useAutoNamingInSaveDialogues'
-        );
 
         // Only update openscad path if the path value changes
         if (this.config.lastOpenscadPath !== this.config.openscadPath) {
@@ -101,9 +93,7 @@ export class PreviewManager {
         }
 
         // Set the max previews
-        this.previewStore.maxPreviews = this.config.maxInstances
-            ? this.config.maxInstances
-            : 0;
+        this.previewStore.maxPreviews = 0;
     }
 
     // Gets the uri of the active editor

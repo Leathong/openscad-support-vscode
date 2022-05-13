@@ -25,7 +25,7 @@ export function activate(context: vscode.ExtensionContext): void {
     );
     context.subscriptions.push(
         vscode.commands.registerCommand(
-            'openscad.preview',
+            'scad-lsp.preview',
             (mainUri, allUris) => previewManager.openFile(mainUri, allUris)
         )
     );
@@ -72,10 +72,10 @@ function onDidChangeActiveTextEditor() {
 
 // Run when configuration is changed
 function onDidChangeConfiguration() {
-    const config = vscode.workspace.getConfiguration('openscad'); // Get new config
+    const config = vscode.workspace.getConfiguration('scad-lsp'); // Get new config
     Cheatsheet.onDidChangeConfiguration(config); // Update the cheatsheet with new config
     previewManager.onDidChangeConfiguration(config); // Update launcher with new config
-    ScadClient.onDidChangeConfiguration();
+    ScadClient.onDidChangeConfiguration(config);
     // vscode.window.showInformationMessage("Config change!"); // DEBUG
 }
 

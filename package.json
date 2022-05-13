@@ -1,8 +1,8 @@
 {
     "name": "openscad-language-support",
     "displayName": "OpenSCAD Language Support",
-    "description": "Maybe the best extension for OpenSCAD so far. Provide auto-completion, document symbols, and more for VSCode!",
-    "version": "1.0.10",
+    "description": "Maybe the best extension for OpenSCAD so far. Provide formatting, auto-completion, document symbols, and more for VSCode!",
+    "version": "1.1.1",
     "publisher": "Leathong",
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
@@ -11,7 +11,8 @@
     },
     "categories": [
         "Programming Languages",
-        "Snippets"
+        "Snippets",
+        "Formatters"
     ],
     "keywords": [
         "openscad",
@@ -28,20 +29,20 @@
     "activationEvents": [
         "onLanguage:scad",
         "workspaceContains:**/*.scad",
-        "onCommand:openscad.preview",
-        "onCommand:openscad.cheatsheet",
+        "onCommand:scad-lsp.preview",
+        "onCommand:scad-lsp.cheatsheet",
         "onWebviewPanel:cheatsheet"
     ],
     "main": "./out/extension.js",
     "contributes": {
         "commands": [
             {
-                "command": "openscad.cheatsheet",
+                "command": "scad-lsp.cheatsheet",
                 "title": "Open Cheatsheet",
                 "category": "OpenSCAD"
             },
             {
-                "command": "openscad.preview",
+                "command": "scad-lsp.preview",
                 "title": "Preview in OpenSCAD",
                 "category": "OpenSCAD",
                 "icon": {
@@ -53,28 +54,28 @@
         "menus": {
             "editor/title": [
                 {
-                    "command": "openscad.preview",
-                    "when": "editorLangId == scad && config.openscad.interface.showPreviewIconInEditorTitleMenu",
+                    "command": "scad-lsp.preview",
+                    "when": "editorLangId == scad",
                     "group": "navigation@-1.2"
                 }
             ],
             "editor/title/context": [
                 {
-                    "command": "openscad.preview",
-                    "when": "resourceLangId == scad && config.openscad.interface.showPreviewInContextMenus && config.openscad.interface.showCommandsInEditorTitleContextMenu",
+                    "command": "scad-lsp.preview",
+                    "when": "resourceLangId == scad",
                     "group": "navigation@0"
                 }
             ],
             "explorer/context": [
                 {
-                    "command": "openscad.preview",
-                    "when": "resourceLangId == scad && config.openscad.interface.showPreviewInContextMenus && config.openscad.interface.showCommandsInExplorerContextMenu",
+                    "command": "scad-lsp.preview",
+                    "when": "resourceLangId == scad",
                     "group": "navigation@-1.3"
                 }
             ],
             "commandPalette": [
                 {
-                    "command": "openscad.preview",
+                    "command": "scad-lsp.preview",
                     "when": "editorLangId == scad || resourceLangId == scad"
                 }
             ]
@@ -107,95 +108,32 @@
             }
         ],
         "configuration": {
-            "title": "OpenSCAD",
+            "title": "OpenSCAD-LSP",
             "properties": {
-                "openscad.LSP.searchPaths": {
-                    "type":"array",
-                    "default": [],
-                    "items": {
-                        "type":"string"
-                    },
+                "scad-lsp.searchPaths": {
+                    "type":"string",
                     "description": "search paths for libs"
                 },
-                "openscad.launchPath": {
+                "scad-lsp.launchPath": {
                     "type": "string",
                     "default": "",
-                    "markdownDescription": "Command to launch `openscad`. Either the path to the openscad executable, or just \"`openscad`\" (no quotes) if the executable is in the path. If left blank, it will use the default path for your system noted below:\n- Windows: `C:\\Program Files\\Openscad\\openscad.exe`\n  - _Note:_ Must specify path to `openscad.exe` on Windows for kill command to work properly.\n- MacOS: `/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD`\n- Linux: `openscad` (Automatically in path)",
-                    "scope": "machine-overridable"
+                    "markdownDescription": "Command to launch `openscad`. Either the path to the openscad executable, or just \"`openscad`\" (no quotes) if the executable is in the path. If left blank, it will use the default path for your system noted below:\n- Windows: `C:\\Program Files\\Openscad\\scad-lsp.exe`\n  - _Note:_ Must specify path to `scad-lsp.exe` on Windows for kill command to work properly.\n- MacOS: `/Applications/scad-lsp.app/Contents/MacOS/OpenSCAD`\n- Linux: `openscad` (Automatically in path)"
                 },
-                "openscad.maxInstances": {
-                    "type": "number",
-                    "default": 0,
-                    "markdownDescription": "The maximum number of instances of OpenSCAD allowed.\nSet to `0` for no limit. Instances include any open previews and any active exports.\n> _Note:_ If you decrease this to less than the number of open editors, they will remain open but you will not be able to open more."
-                },
-                "openscad.interface.showPreviewIconInEditorTitleMenu": {
-                    "type": "boolean",
-                    "default": true,
-                    "markdownDescription": "Show **Preview in OpenSCAD** button in editor title menu (right side of tabs)."
-                },
-                "openscad.interface.showCommandsInEditorTitleContextMenu": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Show commands in editor title (tab) context menu."
-                },
-                "openscad.interface.showCommandsInExplorerContextMenu": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Show commands in explorer context menu."
-                },
-                "openscad.interface.showPreviewInContextMenus": {
-                    "type": "boolean",
-                    "default": true,
-                    "markdownDescription": "Show **Preview in OpenSCAD** command in context menus."
-                },
-                "openscad.cheatsheet.displayInStatusBar": {
+                "scad-lsp.fmt_style": {
                     "type": "string",
-                    "enum": [
-                        "always",
-                        "openDoc",
-                        "activeDoc",
-                        "never"
-                    ],
-                    "default": "openDoc",
-                    "description": "When to display the \"Open Cheatsheet\" status bar icon.",
-                    "enumDescriptions": [
-                        "Always displays \"Open Cheatsheet\" in status bar",
-                        "Only display \"Open Cheatsheet\" in status bar when a '.scad' is in an open editor",
-                        "Only display \"Open Cheatsheet\" in status bar when a '.scad' is the active text editor",
-                        "Never display \"Open Cheatsheet\" in status bar"
-                    ]
+                    "default": "",
+                    "description": "clang format style, options: LLVM, GNU, Google, Chromium, Microsoft, Mozilla, WebKit, file"
                 },
-                "openscad.cheatsheet.colorScheme": {
+                "scad-lsp.fmt_exePath": {
                     "type": "string",
-                    "enum": [
-                        "original",
-                        "auto"
-                    ],
-                    "default": "auto",
-                    "description": "The color scheme to use when displaying the OpenSCAD cheatsheet.",
-                    "enumDescriptions": [
-                        "Use original OpenSCAD cheatsheet color scheme",
-                        "Use VSCode's current theme for cheatsheet color sceheme"
-                    ]
-                },
-                "openscad.cheatsheet.openToSide": {
-                    "type": "string",
-                    "enum": [
-                        "beside",
-                        "currentGroup"
-                    ],
-                    "default": "beside",
-                    "description": "Controls which column OpenSCAD cheatsheet is opened.",
-                    "enumDescriptions": [
-                        "Open cheatsheet in column beside current one",
-                        "Open cheatsheet in current column/group"
-                    ]
+                    "default": "",
+                    "description": "clang format executable path"
                 }
             }
         },
         "keybindings": [
             {
-                "command": "openscad.preview",
+                "command": "scad-lsp.preview",
                 "key": "f5",
                 "when": "resourceLangId == scad"
             }

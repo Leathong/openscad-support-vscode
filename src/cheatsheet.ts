@@ -19,7 +19,7 @@ const colorScheme = {
 // Class for Cheatsheet webview and commands
 // Only one instance of cheatsheet panel so basically everything is delcared `static`
 export class Cheatsheet {
-    public static readonly csCommandId = 'openscad.cheatsheet'; // Command id for opening the cheatsheet
+    public static readonly csCommandId = 'scad-lsp.cheatsheet'; // Command id for opening the cheatsheet
     public static readonly viewType = 'cheatsheet'; // Internal reference to cheatsheet panel
 
     public static currentPanel: Cheatsheet | undefined; // Webview Panel
@@ -36,11 +36,7 @@ export class Cheatsheet {
     public static createOrShowPanel(extensionPath: string): void {
         // Determine which column to show cheatsheet in
         // If not active editor, check config to open in current window to to the side
-        const column = vscode.window.activeTextEditor
-            ? Cheatsheet.config.openToSide === 'beside'
-                ? vscode.ViewColumn.Beside
-                : vscode.window.activeTextEditor.viewColumn
-            : undefined;
+        const column = undefined;
 
         if (Cheatsheet.currentPanel) {
             // If we already have a panel, show it in the target column
@@ -129,26 +125,7 @@ export class Cheatsheet {
     public static updateStatusBar(): void {
         let showCsStatusBarItem = false; // Show cheatsheet status bar item or not
 
-        // Determine to show cheatsheet status bar icon based on extension config
-        switch (Cheatsheet.config.displayInStatusBar) {
-            case 'always':
-                showCsStatusBarItem = true;
-                break;
-            case 'openDoc':
-                showCsStatusBarItem = Cheatsheet.isScadDocOpen();
-                break;
-            case 'activeDoc':
-                // Check the languageId of the active text document
-                if (vscode.window.activeTextEditor) {
-                    showCsStatusBarItem = Cheatsheet.isDocScad(
-                        vscode.window.activeTextEditor.document
-                    );
-                }
-                break;
-            case 'never':
-                showCsStatusBarItem = false;
-                break;
-        }
+        showCsStatusBarItem = false;
 
         // Show or hide `Open Cheatsheet` button
         if (Cheatsheet.csStatusBarItem) {
@@ -172,40 +149,16 @@ export class Cheatsheet {
         config: vscode.WorkspaceConfiguration
     ): void {
         // Load the configuration changes
-        Cheatsheet.config.displayInStatusBar = config.get<string>(
-            'cheatsheet.displayInStatusBar',
-            'openDoc'
-        );
-        Cheatsheet.config.colorScheme = config.get<string>(
-            'cheatsheet.colorScheme',
-            'auto'
-        );
-        Cheatsheet.config.openToSide = config.get<string>(
-            'cheatsheet.openToSide',
-            'beside'
-        );
+        
 
         // Update the status bar
         this.updateStatusBar();
-
-        // Update css of webview (if config option has changed)
-        if (
-            Cheatsheet.config.lastColorScheme !==
-                Cheatsheet.config.colorScheme &&
-            Cheatsheet.currentPanel !== undefined
-        ) {
-            Cheatsheet.config.lastColorScheme = Cheatsheet.config.colorScheme; // Update last colorScheme
-            Cheatsheet.currentPanel.updateWebviewContent(); // Update webview html content
-        }
     }
 
     // Updates webview html content
     public updateWebviewContent(): void {
         // If config.colorScheme isn't defined, use colorScheme 'auto'
-        const colorScheme: string =
-            Cheatsheet.config.colorScheme !== undefined
-                ? Cheatsheet.config.colorScheme
-                : 'auto';
+        const colorScheme: string = 'auto';
 
         this._panel.webview.html = this.getWebviewContent(colorScheme);
     }
