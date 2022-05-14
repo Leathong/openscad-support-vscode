@@ -1,8 +1,8 @@
 {
     "name": "openscad-language-support",
     "displayName": "OpenSCAD Language Support",
-    "description": "Maybe the best extension for OpenSCAD so far. Provide formatting, auto-completion, document symbols, and more for VSCode!",
-    "version": "1.1.1",
+    "description": "Maybe the best extension for OpenSCAD so far. Provides formatting, auto-completion, document symbols, and more!",
+    "version": "1.1.2",
     "publisher": "Leathong",
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",

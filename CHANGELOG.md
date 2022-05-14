@@ -1,6 +1,12 @@
 # Changelog
 
 ---
+## [v1.1.2](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.1.2) (2022-05-14)
+
+### fix
+- fixed the issue that no intellisense in module with parameters
+
+---
 ## [v1.1.1](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.1.1) (2022-05-13)
 
 ### add
