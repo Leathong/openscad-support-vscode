@@ -1,5 +1,7 @@
 # OpenSCAD Language Support
 
+marketplace: [[OpenSCAD Language Support](https://marketplace.visualstudio.com/items?itemName=Leathong.openscad-language-support)]
+
 Visual Studio Code extension utilizing the [OpenSCAD language server](https://github.com/Leathong/openscad-LSP.git)， provide language support for OpenSCAD. The extension avalible on Mac, Linux and Windows. If you like this extension, please light up the stars in GitHub.
 
 Project is available at: <https://github.com/Leathong/openscad-support-vscode>  
