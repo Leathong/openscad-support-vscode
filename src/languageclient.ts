@@ -119,9 +119,11 @@ export class ScadClient {
             
             let value = {
                 settings: {
-                    searchPaths: libs,
-                    fmt_exe: fmt_exe,
-                    fmt_style: fmt_style
+                    openscad: {
+                        search_paths: libs,
+                        fmt_exe: fmt_exe,
+                        fmt_style: fmt_style
+                    }
                 }
             }
             let valueString = JSON.stringify(value);
