@@ -21,11 +21,11 @@ export class ScadClient {
         let plat = process.platform;
 
         if (plat == 'darwin') {
-            serverPath = path.join(context.extensionPath, "server/openscad-language-server");
+            serverPath = path.join(context.extensionPath, "server/openscad-lsp");
         } else if (plat == 'linux') {
-            serverPath = path.join(context.extensionPath, "server/openscad-language-server-linux");
+            serverPath = path.join(context.extensionPath, "server/openscad-lsp-linux");
         } else {
-            serverPath = path.join(context.extensionPath, "server/openscad-language-server.exe");
+            serverPath = path.join(context.extensionPath, "server/openscad-lsp.exe");
         }
 
         this.server = child.spawn(serverPath);
