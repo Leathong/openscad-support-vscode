@@ -30,10 +30,11 @@ export class ScadClient {
 
         this.server = child.spawn(serverPath);
 
-        this.server.stderr?.on('data', function (data: Buffer) {
+        this.server.stderr?.on('data', (data: Buffer) => {
             outputChannel.append(
                 data.toString()
             );
+            this.starClient();
         });
 
         this.server.stdout?.on('data', (data: Buffer) => {
