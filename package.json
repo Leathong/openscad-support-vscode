@@ -2,7 +2,7 @@
     "name": "openscad-language-support",
     "displayName": "OpenSCAD Language Support",
     "description": "Maybe the best extension for OpenSCAD so far. Provides formatting, auto-completion, document symbols, and more!",
-    "version": "1.1.5",
+    "version": "1.1.6",
     "publisher": "Leathong",
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
