@@ -12,12 +12,12 @@ The language server is write in rust, project at <https://github.com/Leathong/op
 - builtin function/module documents
 - formatter, you need install clang-format yourself
 - jump to definition
-- code auto-completion  
+- code auto-completion</br>
   <img src="./media/snapshot_suggest.png#gh-light-mode-only" width="70%">
-- path auto-completion  
+- path auto-completion</br>
   <img src="./media/snapshot_path.png#gh-light-mode-only" width="70%">
 - document symbols (*cmd + shift + o* on Mac)
-- hover information  
+- hover information</br>
   <img src="./media/snapshot_hover.png#gh-light-mode-only" width="70%">
 - simple error diagnosis
 - preview and CheatSheet (from [vscode-openscad](https://github.com/Antyos/vscode-openscad))
