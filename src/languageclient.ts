@@ -43,11 +43,9 @@ export class ScadClient {
             );
             this.starClient();
         });
-
-        // this.starClient();
     }
 
-    static starClient() {
+    static async  starClient() {
         if (!this.langclient) {
             const outputChannel: vscode.OutputChannel = this.outputChannel;
 
@@ -82,6 +80,10 @@ export class ScadClient {
                 outputChannel,
                 outputChannelName: 'OpenSCAD',
                 revealOutputChannelOn: languageclient.RevealOutputChannelOn.Info,
+                markdown: {
+                    isTrusted: true,
+                    supportHtml: true,
+                },
             };
 
             // Create the language client and start the client.
@@ -91,21 +93,12 @@ export class ScadClient {
                 serverOptions,
                 clientOptions
             );
+
             this.langclient.registerProposedFeatures();
-
-            // enable tracing (.Off, .Messages, Verbose)
-            this.langclient.trace = languageclient.Trace.Verbose;
-
-            this.langclient.onReady().then(() => {
-                outputChannel.appendLine('[client] Connection has been established');
-            });
-
-            this.langclient.start();
-
-            this.langclient.onReady().then(() => {
-                this.clientReady = true;
-                this.onDidChangeConfiguration();
-            });
+            this.langclient.setTrace(languageclient.Trace.Verbose)
+            await this.langclient.start();
+            this.clientReady = true;
+            this.onDidChangeConfiguration();
         }
     }
 

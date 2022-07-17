@@ -1,6 +1,12 @@
 # Changelog
 
 ---
+## [v1.1.7](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.1.7) (2022-07-17)
+
+### add
+- add builtin function/module documents
+
+---
 ## [v1.1.2](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.1.2) (2022-05-14)
 
 ### fix
