@@ -28,7 +28,9 @@ export class ScadClient {
             serverPath = path.join(context.extensionPath, "server/openscad-lsp.exe");
         }
 
-        this.server = child.spawn(serverPath);
+        let builtin_file = path.join(context.extensionPath, "media/builtins.scad");
+
+        this.server = child.spawn(serverPath, ["--builtin", builtin_file]);
 
         this.server.stderr?.on('data', (data: Buffer) => {
             outputChannel.append(
