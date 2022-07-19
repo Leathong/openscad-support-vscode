@@ -29,7 +29,7 @@ The language server is write in rust, project at <https://github.com/Leathong/op
 
 The extension will read OPENSCADPATH Environment Variable to point to the library(s), you can also add paths to the setting `scad-lsp.searchPaths`.
 
-If the extension can not find clang-format, you need to set the executable path `scad-slp.fmt_exePath`.
+If the extension can not find clang-format, you need to set the executable path `scad-lsp.fmt_exePath`.
 
 For more information, see: [Using an external Editor with OpenSCAD](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Using_an_external_Editor_with_OpenSCAD)
 
