@@ -1,6 +1,12 @@
 # Changelog
 
 ---
+## [v1.2.1](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.2.1) (2022-07-29)
+
+### add
+- add config for whether default params included in auto-completion
+
+---
 ## [v1.1.9](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.1.9) (2022-07-18)
 
 ### modify

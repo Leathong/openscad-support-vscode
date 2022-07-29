@@ -2,7 +2,7 @@
     "name": "openscad-language-support",
     "displayName": "OpenSCAD Language Support",
     "description": "Maybe the best extension for OpenSCAD so far. Provides formatting, auto-completion, document symbols, and more you need!",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "publisher": "Leathong",
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
@@ -117,17 +117,22 @@
                 "scad-lsp.launchPath": {
                     "type": "string",
                     "default": "",
-                    "markdownDescription": "Command to launch `openscad`. Either the path to the openscad executable, or just \"`openscad`\" (no quotes) if the executable is in the path. If left blank, it will use the default path for your system noted below:\n- Windows: `C:\\Program Files\\Openscad\\scad-lsp.exe`\n  - _Note:_ Must specify path to `scad-lsp.exe` on Windows for kill command to work properly.\n- MacOS: `/Applications/scad-lsp.app/Contents/MacOS/OpenSCAD`\n- Linux: `openscad` (Automatically in path)"
+                    "markdownDescription": "Command to launch `openscad`. Either the path to the openscad executable, or just \"`openscad`\" (no quotes) if the executable is in the path. If left blank, it will use the default path for your system noted below:\n- Windows: `C:\\Program Files\\Openscad\\openscad.exe`\n- MacOS: `/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD`\n- Linux: `openscad` (Automatically in path)"
                 },
-                "scad-lsp.fmt_style": {
+                "scad-lsp.fmtStyle": {
                     "type": "string",
                     "default": "",
                     "description": "clang format style, options: LLVM, GNU, Google, Chromium, Microsoft, Mozilla, WebKit, file"
                 },
-                "scad-lsp.fmt_exePath": {
+                "scad-lsp.fmtExePath": {
                     "type": "string",
                     "default": "",
                     "description": "clang format executable path"
+                },
+                "scad-lsp.defaultParam": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "if true, will include defualt params in auto-completion"
                 }
             }
         },

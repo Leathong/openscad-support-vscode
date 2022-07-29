@@ -22,14 +22,28 @@ The language server is write in rust, project at <https://github.com/Leathong/op
 - simple error diagnosis
 - preview and CheatSheet (from [vscode-openscad](https://github.com/Antyos/vscode-openscad))
 
+## Settings
+
+- **scad-lsp.searchPaths**:</br>
+  The extension will read OPENSCADPATH Environment Variable to point to the library(s), or you can set search paths by this property.
+
+- **scad-lsp.launchPath**:</br>
+  Command to launch `openscad`. Either the path to the openscad executable, or just \"`openscad`\" (no quotes) if the executable is in the path. If left blank, it will use the default path for your system noted below:
+  - Windows: `C:\\Program Files\\Openscad\\openscad.exe`
+  - MacOS: `/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD` 
+  - Linux: `openscad` (Automatically in path).
+
+- **scad-lsp.fmtStyle**:</br>
+  clang format style, options: LLVM, GNU, Google, Chromium, Microsoft, Mozilla, WebKit, file. If you'd like to customize your style, set this property to `file`, and place your `.clang-format` file to your source code directory.
+
+- **scad-lsp.fmtExePath**:</br>
+  clang format executable path.
+
+- **scad-lsp.defaultParam**:</br>
+  if true, will include defualt params in auto-completion.
+
 ## TODO
 - symbol rename.
-
-## Usage
-
-The extension will read OPENSCADPATH Environment Variable to point to the library(s), you can also add paths to the setting `scad-lsp.searchPaths`.
-
-If the extension can not find clang-format, you need to set the executable path `scad-lsp.fmt_exePath`.
 
 For more information, see: [Using an external Editor with OpenSCAD](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Using_an_external_Editor_with_OpenSCAD)
 
