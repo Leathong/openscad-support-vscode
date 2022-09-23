@@ -1,0 +1,18 @@
+# Generated code
+node_modules/
+out/
+
+# Workspace settings
+.vscode/*
+!.vscode/*.template.json
+
+# Secret files
+**/secret
+*secret*
+
+# Log files
+*.log
+
+package-lock.json
+
+Makefile

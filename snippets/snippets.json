@@ -1,0 +1,8 @@
+{
+	"ass": {
+		"prefix": "ass",
+		"body": "assign (${1:x} = ${2:0}) {\r\n\t${}$0\r\n}\r\n",
+		"description": "assign",
+		"scope": "source.scad"
+	}
+}

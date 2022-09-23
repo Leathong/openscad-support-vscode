@@ -1,0 +1,40 @@
+# VSCode workspace files
+.vscode/**
+.vscode-test/**
+
+# Gitignore
+.gitignore
+
+# GitHub
+.github/
+
+# Config / ESLint / Prettier
+tsconfig.json
+.eslintrc.json
+.eslintignore
+.prettierrc.json
+.prettierignore
+
+# Typescript files
+src/
+out/*.js.map
+*.vsix
+
+# Tests
+test/
+
+# Ignore source files for images
+media/icons/source/**
+
+# Icon theme is currently unsupported
+scad-icon-theme.json
+
+# Ignore yaml-tmlanguage files (only used for dev)
+syntaxes/*.yaml-tmLanguage
+
+# Secret files
+**/secret
+*secret*
+
+# Log files
+*.log
