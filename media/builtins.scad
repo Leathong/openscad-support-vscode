@@ -1,1 +1,1 @@
-/Volumes/Development/open_source/OpenSCAD/openscad-lsp/src/builtins.scad
+/Volumes/Development/open_source/OpenSCAD/openscad-lsp/src/builtins

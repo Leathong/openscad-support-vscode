@@ -15,4 +15,4 @@ out/
 
 package-lock.json
 
-Makefile
+openscad-language-support-*.vsix
