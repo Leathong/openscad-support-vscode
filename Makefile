@@ -9,7 +9,7 @@ install: build
 
 publish: build
 	vsce publish
-	npm ovsx publish $(shell find ./ -name openscad-language-support-*.vsix) -p ${OVSX_TOKEN}
+	ovsx publish $(shell find ./ -name openscad-language-support-*.vsix) -p ${OVSX_TOKEN}
 
 copy_debug_file:
 	cp  ../openscad-lsp/target/debug/openscad-lsp ../openscad-lsp/target/release/openscad-lsp

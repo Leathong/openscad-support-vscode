@@ -1,6 +1,12 @@
 # Changelog
 
 ---
+## [v1.2.2](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.2.2) (2022-07-29)
+
+### fix
+- update server to fix issue about 'each' keyword
+
+---
 ## [v1.2.1](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.2.1) (2022-07-29)
 
 ### add
