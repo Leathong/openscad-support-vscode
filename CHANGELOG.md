@@ -1,7 +1,13 @@
 # Changelog
 
 ---
-## [v1.2.2](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.2.2) (2022-07-29)
+## [v1.2.3](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.2.3) (2022-10-12)
+
+### fix
+- extracting assert expression
+
+---
+## [v1.2.2](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.2.2) (2022-9-30)
 
 ### fix
 - update server to fix issue about 'each' keyword
