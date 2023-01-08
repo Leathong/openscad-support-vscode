@@ -46,34 +46,26 @@ export class Preview {
 
         if (DEBUG) console.log(`commangArgs: ${commandArgs}`); // DEBUG
 
-        // New process
-        this._process = child.execFile(
-            Preview._scadPath,
-            commandArgs,
-            (error, stdout, stderr) => {
-                // If there's an error
-                if (error) {
-                    // console.error(`exec error: ${error}`);
-                    if (DEBUG) console.error(`stderr: ${stderr}`); // DEBUG
-                    vscode.window.showErrorMessage(stderr); // Display error message
-                }
-                // No error
-                else {
-                    // For some reason, OpenSCAD seems to use stderr for all console output...
-                    // If there is no error, assume stderr should be treated as stdout
-                    // For more info. see: https://github.com/openscad/openscad/issues/3358
-                    const message = stdout || stderr;
-                    if (DEBUG) console.log(`stdout: ${message}`); // DEBUG
+        this._process = child.spawn(Preview._scadPath, commandArgs);
+        this._process.stderr?.on('data', (data: Buffer) => {
+            if (DEBUG) console.log(`stdout: ${data.toString()}`); // DEBUG
+            vscode.window.showInformationMessage(data.toString()); // Display info
+        });
 
-                    vscode.window.showInformationMessage(message); // Display info
-                }
+        this._process.stdout?.on('data', (data: Buffer) => {
+            if (DEBUG) console.log(`stdout: ${data.toString()}`); // DEBUG
+            vscode.window.showInformationMessage(data.toString()); // Display info
+        });
 
-                // if (DEBUG) console.log(`real stdout: ${stdout}`);    // DEBUG
-
-                this._isRunning = false;
-                this._onKilled.dispatch(); // Dispatch 'onKilled' event
+        this._process.on('close', (code) => {
+            if (code != 0) {
+                if (DEBUG) console.error(`stderr: Launch OpenSCAD failed!!! ${code}`); // DEBUG
+                vscode.window.showErrorMessage(`Launch OpenSCAD failed!!! ${code}`); // Display error message
             }
-        );
+
+            this._isRunning = false;
+            this._onKilled.dispatch(); // Dispatch 'onKilled' event
+        });
 
         // Child process is now running
         this._isRunning = true;
