@@ -7,6 +7,7 @@
 import * as vscode from 'vscode';
 import * as child from 'child_process';
 import { type } from 'os';
+import path from 'path';
 import { ISignal, SignalDispatcher } from 'ste-signals';
 import { DEBUG } from './config';
 import commandExists = require('command-exists');
@@ -46,7 +47,8 @@ export class Preview {
 
         if (DEBUG) console.log(`commangArgs: ${commandArgs}`); // DEBUG
 
-        this._process = child.spawn(Preview._scadPath, commandArgs);
+        const workspace = vscode.workspace.workspaceFolders.find(w => this._fileUri.fsPath.includes(w.uri.fsPath))
+        this._process = child.spawn(Preview._scadPath, commandArgs, { cwd: workspace.uri.fsPath });
         this._process.stderr?.on('data', (data: Buffer) => {
             if (DEBUG) console.log(`stdout: ${data.toString()}`); // DEBUG
             vscode.window.showInformationMessage(data.toString()); // Display info
