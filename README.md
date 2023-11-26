@@ -3,12 +3,12 @@
 
 # OpenSCAD Language Support
 
-marketplace: [[OpenSCAD Language Support](https://marketplace.visualstudio.com/items?itemName=Leathong.openscad-language-support)]
+VS Code Marketplace: [[OpenSCAD Language Support](https://marketplace.visualstudio.com/items?itemName=Leathong.openscad-language-support)]
 
-Visual Studio Code extension utilizing the [OpenSCAD language server](https://github.com/Leathong/openscad-LSP.git)， provide language support for OpenSCAD. The extension avalible on Mac, Linux and Windows. If you like this extension, please light up the stars in GitHub.
+Visual Studio Code extension utilizing the [OpenSCAD language server](https://github.com/Leathong/openscad-LSP.git)，providing language support for OpenSCAD. The extension is avalible on Mac, Linux, and Windows. If you like this extension, please light up the stars in GitHub.
 
-Project is available at: <https://github.com/Leathong/openscad-support-vscode>  
-The language server is write in rust, project at <https://github.com/Leathong/openscad-LSP.git>
+Project is available at: <https://github.com/Leathong/openscad-support-vscode>
+The language server is written in Rust: <https://github.com/Leathong/openscad-LSP.git>
 
 ## Features
 
@@ -49,5 +49,3 @@ The language server is write in rust, project at <https://github.com/Leathong/op
 - symbol rename.
 
 For more information, see: [Using an external Editor with OpenSCAD](https://en.wikibooks.org/wiki/OpenSCAD_User_Manual/Using_an_external_Editor_with_OpenSCAD)
-
-
