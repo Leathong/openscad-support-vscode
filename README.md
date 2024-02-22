@@ -8,7 +8,10 @@ VS Code Marketplace: [[OpenSCAD Language Support](https://marketplace.visualstud
 Visual Studio Code extension utilizing the [OpenSCAD language server](https://github.com/Leathong/openscad-LSP.git)，providing language support for OpenSCAD. The extension is avalible on Mac, Linux, and Windows. If you like this extension, please light up the stars in GitHub.
 
 Project is available at: <https://github.com/Leathong/openscad-support-vscode>
-The language server is written in Rust: <https://github.com/Leathong/openscad-LSP.git>
+
+### Related projects
+- The language server, written in Rust: <https://github.com/Leathong/openscad-LSP.git>
+- The parser, https://github.com/bollian/tree-sitter-openscad
 
 ## Features
 
