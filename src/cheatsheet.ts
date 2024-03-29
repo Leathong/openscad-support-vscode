@@ -17,7 +17,7 @@ const colorScheme = {
 };
 
 // Class for Cheatsheet webview and commands
-// Only one instance of cheatsheet panel so basically everything is delcared `static`
+// Only one instance of cheatsheet panel so basically everything is declared `static`
 export class Cheatsheet {
     public static readonly csCommandId = 'scad-lsp.cheatsheet'; // Command id for opening the cheatsheet
     public static readonly viewType = 'cheatsheet'; // Internal reference to cheatsheet panel
@@ -46,7 +46,7 @@ export class Cheatsheet {
 
         // Otherwise, create and show new panel
         const panel = vscode.window.createWebviewPanel(
-            Cheatsheet.viewType, // Indentifies the type of webview. Used internally
+            Cheatsheet.viewType, // Identifies the type of webview. Used internally
             'OpenSCAD Cheat Sheet', // Title of panel displayed to the user
             column || vscode.ViewColumn.One, // Editor column
             {
@@ -55,7 +55,7 @@ export class Cheatsheet {
                     vscode.Uri.file(path.join(extensionPath, 'media')),
                 ],
                 // Disable scripts
-                // (defaults to false, but no harm in explcit declaration)
+                // (defaults to false, but no harm in explicit declaration)
                 enableScripts: false,
             } // Webview options
         );
@@ -78,7 +78,7 @@ export class Cheatsheet {
         this._extensionPath = extensionPath;
 
         // Listen for when panel is disposed
-        // This happens when user closes the panel or when the panel is closed progamatically
+        // This happens when user closes the panel or when the panel is closed programmatically
         this._panel.onDidDispose(() => this.dispose(), null, this._disposables);
 
         // Set HTML content

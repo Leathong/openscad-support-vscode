@@ -5,7 +5,7 @@
 
 VS Code Marketplace: [[OpenSCAD Language Support](https://marketplace.visualstudio.com/items?itemName=Leathong.openscad-language-support)]
 
-Visual Studio Code extension utilizing the [OpenSCAD language server](https://github.com/Leathong/openscad-LSP.git)，providing language support for OpenSCAD. The extension is avalible on Mac, Linux, and Windows. If you like this extension, please light up the stars in GitHub.
+Visual Studio Code extension utilizing the [OpenSCAD language server](https://github.com/Leathong/openscad-LSP.git)，providing language support for OpenSCAD. The extension is available on Mac, Linux, and Windows. If you like this extension, please light up the stars in GitHub.
 
 Project is available at: <https://github.com/Leathong/openscad-support-vscode>
 
@@ -46,7 +46,7 @@ Project is available at: <https://github.com/Leathong/openscad-support-vscode>
   clang format executable path.
 
 - **scad-lsp.defaultParam**:</br>
-  if true, will include defualt params in auto-completion.
+  if true, will include default params in auto-completion.
 
 ## TODO
 - symbol rename.

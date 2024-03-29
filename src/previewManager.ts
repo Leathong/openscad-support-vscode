@@ -73,7 +73,7 @@ export class PreviewManager {
 
     // Constructor
     public constructor() {
-        // Load configutation
+        // Load configuration
         this.onDidChangeConfiguration(
             vscode.workspace.getConfiguration('openscad')
         );

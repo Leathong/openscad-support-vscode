@@ -136,7 +136,7 @@
                 "scad-lsp.defaultParam": {
                     "type": "boolean",
                     "default": false,
-                    "description": "if true, will include defualt params in auto-completion"
+                    "description": "if true, will include default params in auto-completion"
                 }
             }
         },

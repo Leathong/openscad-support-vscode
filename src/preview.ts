@@ -116,7 +116,7 @@ export class Preview {
             return undefined;
         }
 
-        // If previewType is undefined, automatically assign it based on arguemnts
+        // If previewType is undefined, automatically assign it based on arguments
         if (!previewType)
             previewType = args?.some((item) => ['-o', '--o'].includes(item))
                 ? 'output'
