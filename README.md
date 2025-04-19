@@ -1,6 +1,3 @@
-> Note: I will be busy with work in the months. So only some critical bugs will be fixed and the development of new features will be delayed.
-
-
 # OpenSCAD Language Support
 
 VS Code Marketplace: [[OpenSCAD Language Support](https://marketplace.visualstudio.com/items?itemName=Leathong.openscad-language-support)]
