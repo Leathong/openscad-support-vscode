@@ -1,3 +1,5 @@
+> **NOTICE: Because clang-format produces poor formatting results for OpenSCAD, we have completely removed support for clang-format and switched to the new formatter [topiary](https://github.com/tweag/topiary), please download topjary from [release](https://github.com/Leathong/openscad-LSP/releases) page and install it to your system path, or set the  `scad-lsp.fmtExePath` config.**
+
 # OpenSCAD Language Support
 
 VS Code Marketplace: [[OpenSCAD Language Support](https://marketplace.visualstudio.com/items?itemName=Leathong.openscad-language-support)]
@@ -13,7 +15,7 @@ Project is available at: <https://github.com/Leathong/openscad-support-vscode>
 ## Features
 
 - builtin function/module documents
-- formatter, you need install clang-format yourself
+- formatter, we use topiary to format the code, you need to install it yourself. download [page](https://github.com/Leathong/openscad-LSP/releases)
 - jump to definition
 - code auto-completion</br>
   <img src="./media/snapshot_suggest.png#gh-light-mode-only" width="70%">

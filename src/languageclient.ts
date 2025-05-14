@@ -20,16 +20,21 @@ export class ScadClient {
 
         let plat = process.platform;
 
+        let fmt_exe = "topiray"
         if (plat == 'darwin') {
             serverPath = path.join(context.extensionPath, "server/openscad-lsp");
+            fmt_exe = path.join(context.extensionPath, "server/topiary");
         } else if (plat == 'linux') {
             serverPath = path.join(context.extensionPath, "server/openscad-lsp-linux");
+            fmt_exe = path.join(context.extensionPath, "server/topiary-linux");
         } else {
             serverPath = path.join(context.extensionPath, "server/openscad-lsp.exe");
+            fmt_exe = path.join(context.extensionPath, "server/topiary.exe");
         }
 
         let builtin_file = path.join(context.extensionPath, "media/builtins.scad");
 
+        // this.server = child.spawn(serverPath, ["--builtin", builtin_file, "--fmt-exe", fmt_exe]);
         this.server = child.spawn(serverPath, ["--builtin", builtin_file]);
 
         this.server.stderr?.on('data', (data: Buffer) => {

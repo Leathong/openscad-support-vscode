@@ -1,6 +1,13 @@
 # Changelog
 
 ---
+## [v1.2.8](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.2.8) (2025-05-14)
+
+### modify
+- update server 
+- use topiary to replace clang-format
+
+---
 ## [v1.2.3](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.2.3) (2022-10-12)
 
 ### fix
