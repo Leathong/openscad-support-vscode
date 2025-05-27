@@ -115,16 +115,16 @@ export class ScadClient {
         }
         if (this.clientReady && config) {
             let libs = config.get<string>("searchPaths");
-            let fmt_style = config.get<string>("fmtStyle");
-            let fmt_exe = config.get<string>("fmtExePath");
+            let fmt_ident = config.get<string>("fmtIdent");
+            let fmt_query_file = config.get<string>("fmtQueryFilePath");
             let default_param = config.get<string>("defaultParam")
             
             let value = {
                 settings: {
                     openscad: {
                         search_paths: libs,
-                        fmt_exe: fmt_exe,
-                        fmt_style: fmt_style,
+                        indent: fmt_ident,
+                        query_file: fmt_query_file,
                         default_param: default_param,
                     }
                 }

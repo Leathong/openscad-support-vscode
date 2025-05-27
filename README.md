@@ -1,4 +1,4 @@
-> **NOTICE: Because clang-format produces poor formatting results for OpenSCAD, we have completely removed support for clang-format and switched to the new formatter [topiary](https://github.com/tweag/topiary), please download topjary from [release](https://github.com/Leathong/openscad-LSP/releases) page and install it to your system path, or set the  `scad-lsp.fmtExePath` config.**
+> **NOTICE: Because clang-format produces poor formatting results for OpenSCAD, we have completely removed support for clang-format and switched to the new formatter [topiary](https://github.com/tweag/topiary).**
 
 # OpenSCAD Language Support
 
@@ -10,12 +10,12 @@ Project is available at: <https://github.com/Leathong/openscad-support-vscode>
 
 ### Related projects
 - The language server, written in Rust: <https://github.com/Leathong/openscad-LSP.git>
-- The parser, https://github.com/bollian/tree-sitter-openscad
+- The parser, https://github.com/openscad/tree-sitter-openscad
 
 ## Features
 
 - builtin function/module documents
-- formatter, we use topiary to format the code, you need to install it yourself. download [page](https://github.com/Leathong/openscad-LSP/releases)
+- formatter, utilizing topiary.
 - jump to definition
 - code auto-completion</br>
   <img src="./media/snapshot_suggest.png#gh-light-mode-only" width="70%">
@@ -38,11 +38,11 @@ Project is available at: <https://github.com/Leathong/openscad-support-vscode>
   - MacOS: `/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD` 
   - Linux: `openscad` (Automatically in path).
 
-- **scad-lsp.fmtStyle**:</br>
-  clang format style, options: LLVM, GNU, Google, Chromium, Microsoft, Mozilla, WebKit, file. If you'd like to customize your style, set this property to `file`, and place your `.clang-format` file to your source code directory.
+- **scad-lsp.fmtIdent**:</br>
+  The indentation string. Defaults to `"  "` if not provided. Any string can be provided, but in most instances will be some whitespace: `"  "`, `"    "`, or `"\t"`.
 
-- **scad-lsp.fmtExePath**:</br>
-  clang format executable path.
+- **scad-lsp.fmtQueryFilePath**:</br>
+  The query file used for topiary formatting, more detail refer to [topiary](https://github.com/tweag/topiary).
 
 - **scad-lsp.defaultParam**:</br>
   if true, will include default params in auto-completion.
