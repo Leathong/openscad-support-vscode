@@ -1,5 +1,10 @@
 # Changelog
 
+## [v2.0.1](https://github.com/Leathong/openscad-support-vscode/releases/tag/v2.0.1) (2025-05-28)
+
+### modify
+- Integrate Topiary into the server.
+
 ---
 ## [v1.2.8](https://github.com/Leathong/openscad-support-vscode/releases/tag/v1.2.8) (2025-05-14)
 

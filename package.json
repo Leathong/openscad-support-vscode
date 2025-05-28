@@ -2,7 +2,7 @@
     "name": "openscad-language-support",
     "displayName": "OpenSCAD Language Support",
     "description": "Provides formatting, auto-completion, jump to definition, document symbols, and more you need!",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "publisher": "Leathong",
     "icon": "media/logo.png",
     "license": "SEE LICENSE IN LICENSE.txt",
