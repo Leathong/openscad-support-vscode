@@ -9,6 +9,7 @@ import { Cheatsheet } from './cheatsheet';
 import { PreviewManager } from './previewManager';
 import { ScadClient } from './languageclient';
 import { DEBUG } from './config';
+import { getWebviewOptions, PreviewPanel } from './previewPanel';
 
 // New launch object
 const previewManager = new PreviewManager();
@@ -16,6 +17,18 @@ const previewManager = new PreviewManager();
 // Called when extension is activated
 export function activate(context: vscode.ExtensionContext): void {
     console.log('Activating openscad extension');
+
+    if (vscode.window.registerWebviewPanelSerializer) {
+		// Make sure we register a serializer in activation event
+		vscode.window.registerWebviewPanelSerializer(PreviewPanel.viewType, {
+			async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: unknown) {
+				console.log(`Got state: ${state}`);
+				// Reset the webview options so we use latest uri for `localResourceRoots`.
+				webviewPanel.webview.options = getWebviewOptions(context.extensionUri);
+				PreviewPanel.revive(webviewPanel, context.extensionUri);
+			}
+		});
+	}
 
     // Register commands
     context.subscriptions.push(

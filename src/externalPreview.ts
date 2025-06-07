@@ -20,7 +20,7 @@ const pathByPlatform = {
 export type PreviewType = 'view' | 'output';
 
 // Preview class to open instance of OpenSCAD
-export class Preview {
+export class ExternalPreview {
     // Paths
     private static _scadPath: string;
     private static _isValidScadPath = false;
@@ -47,7 +47,7 @@ export class Preview {
         if (DEBUG) console.log(`commangArgs: ${commandArgs}`); // DEBUG
 
         const workspace = vscode.workspace.workspaceFolders?.find(w => this._fileUri.fsPath.includes(w.uri.fsPath))
-        this._process = child.spawn(Preview._scadPath, commandArgs, { cwd: workspace?.uri.fsPath });
+        this._process = child.spawn(ExternalPreview._scadPath, commandArgs, { cwd: workspace?.uri.fsPath });
         this._process.stderr?.on('data', (data: Buffer) => {
             if (DEBUG) console.log(`stdout: ${data.toString()}`); // DEBUG
             vscode.window.showInformationMessage(data.toString()); // Display info
@@ -107,10 +107,10 @@ export class Preview {
         resource: vscode.Uri,
         previewType?: PreviewType,
         args?: string[]
-    ): Preview | undefined {
+    ): ExternalPreview | undefined {
         // Error checking
         // Make sure scad path is defined
-        if (!Preview._isValidScadPath) {
+        if (!ExternalPreview._isValidScadPath) {
             if (DEBUG) console.error('OpenSCAD path is undefined in config');
             vscode.window.showErrorMessage('OpenSCAD path does not exist.');
             return undefined;
@@ -123,22 +123,22 @@ export class Preview {
                 : 'view';
 
         // New file
-        return new Preview(resource, previewType, args);
+        return new ExternalPreview(resource, previewType, args);
     }
 
     // Used to set the path to `openscad.exe` on the system. Necessary to open children
     public static setScadPath(scadPath?: string): void {
         // Set OpenSCAD path if specified; otherwise use system default
-        Preview._scadPath = scadPath
+        ExternalPreview._scadPath = scadPath
             ? scadPath
             : pathByPlatform[type() as keyof typeof pathByPlatform];
 
-        if (DEBUG) console.log(`Path: '${Preview._scadPath}'`); // DEBUG
+        if (DEBUG) console.log(`Path: '${ExternalPreview._scadPath}'`); // DEBUG
 
         // Verify 'openscad' command is valid
-        Preview._isValidScadPath = false; // Set to false until can test if the command exists
-        commandExists(Preview._scadPath, (err: null, exists: boolean) => {
-            Preview._isValidScadPath = exists;
+        ExternalPreview._isValidScadPath = false; // Set to false until can test if the command exists
+        commandExists(ExternalPreview._scadPath, (err: null, exists: boolean) => {
+            ExternalPreview._isValidScadPath = exists;
         });
     }
 
@@ -147,9 +147,9 @@ export class Preview {
     }
 
     public static get scadPath(): string {
-        return Preview._scadPath;
+        return ExternalPreview._scadPath;
     }
     public static get isValidScadPath(): boolean {
-        return Preview._isValidScadPath;
+        return ExternalPreview._isValidScadPath;
     }
 }

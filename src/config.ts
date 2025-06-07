@@ -6,6 +6,7 @@
 
 // Extension config values
 export interface ScadConfig {
+    inlinePreview?: boolean;
     openscadPath?: string;
     lastOpenscadPath?: string;
 }

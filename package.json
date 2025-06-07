@@ -115,6 +115,10 @@
                     "type": "string",
                     "description": "search paths for libs"
                 },
+                "scad-lsp.inlinePreview": {
+                    "type": "boolean",
+                    "description": "When enabled, shows previews directly in VSCode rather than opening externally"
+                },
                 "scad-lsp.launchPath": {
                     "type": "string",
                     "default": "",
