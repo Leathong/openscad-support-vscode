@@ -1,0 +1,11 @@
+{
+	"compilerOptions": {
+		"module": "commonjs",
+		"target": "esnext",
+		"outDir": "../out/preview",
+		"sourceMap": true,
+		"strict": true,
+		"rootDir": ".",
+	},
+    "include": ["./environment.d.ts", "./main.ts"]
+}

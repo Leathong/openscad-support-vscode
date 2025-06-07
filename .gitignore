@@ -16,3 +16,6 @@ out/
 package-lock.json
 
 openscad-language-support-*.vsix
+
+# MacOS
+.DS_Store

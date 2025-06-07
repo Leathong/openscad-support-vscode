@@ -110,30 +110,17 @@ export class PreviewPanel {
 	private _update() {
 		const webview = this._panel.webview;
 		this._panel.title = "OpenSCAD Preview";
-		this._panel.webview.html = this._getHtmlForWebview(webview);
-		// Vary the webview's content based on where it is located in the editor.
-		// switch (this._panel.viewColumn) {
-		// 	case vscode.ViewColumn.Two:
-				
-		// 		return;
-
-			// case vscode.ViewColumn.Three:
-			// 	this._update(webview);
-			// 	return;
-
-			// case vscode.ViewColumn.One:
-			// default:
-			// 	this._update(webview);
-			// 	return;
-		// }
+		this._panel.webview.html = this._getHtmlForWebview(webview, this._panel.viewColumn);
 	}
 
-	private _getHtmlForWebview(webview: vscode.Webview) {
+	private _getHtmlForWebview(webview: vscode.Webview, column?: vscode.ViewColumn) {
 		// Local path to main script run in the webview
 		const scriptPathOnDisk = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview', 'main.js');
+		const modelViewerPathOnDisk = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview', 'model-viewer.min.js');
 
 		// And the uri we use to load this script in the webview
 		const scriptUri = webview.asWebviewUri(scriptPathOnDisk);
+		const modelViewerUri = webview.asWebviewUri(modelViewerPathOnDisk);
 
 		// Local path to css styles
 		const styleResetPath = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview','reset.css');
@@ -144,6 +131,13 @@ export class PreviewPanel {
 		const stylesResetUri = webview.asWebviewUri(styleResetPath);
 		const stylesVSCodeUri = webview.asWebviewUri(stylesPathVSCodePath);
 		const stylesMainUri = webview.asWebviewUri(stylesPathMainPath);
+
+		// Local path to other assets
+		const skyboxLights = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview','skybox-lights.jpg');
+		const axes = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview','axes.glb');
+
+		const skyboxLightsUri = webview.asWebviewUri(skyboxLights);
+		const axesUri = webview.asWebviewUri(axes);
 
 		// Use a nonce to only allow specific scripts to be run
 		const nonce = getNonce();
@@ -165,14 +159,47 @@ export class PreviewPanel {
 				<link href="${stylesVSCodeUri}" rel="stylesheet">
 				<link href="${stylesMainUri}" rel="stylesheet">
 
-				<title>Cat Coding</title>
+				<title>OpenSCAD Preview</title>
 			</head>
 			<body>
-				<h1>preview</h1>
-
-				<script nonce="${nonce}" src="${scriptUri}"></script>
+				<div id="openscad-preview">
+					<img id="loading-image"/>
+					<model-viewer
+						id="preview-model"
+						orientation="0deg -90deg 0deg"
+						class="main-viewer"
+						environment-image="${skyboxLightsUri}"
+						max-camera-orbit="auto 180deg auto"
+						min-camera-orbit="auto 0deg auto"
+						camera-controls
+						ar
+					>
+						<span slot="progress-bar"></span>
+					</model-viewer>
+					<model-viewer
+						id="model-axes"
+						orientation="0deg -90deg 0deg"
+						src="${axesUri}"
+						loading="eager"
+						// interpolation-decay="0"
+						environment-image="${skyboxLightsUri}"
+						max-camera-orbit="auto 180deg auto"
+						min-camera-orbit="auto 0deg auto"
+						orbit-sensitivity="5"
+						interaction-prompt="none"
+						camera-controls="false"
+						disable-zoom
+						disable-tap 
+						disable-pan
+					>
+						<span slot="progress-bar"></span>
+					</model-viewer>
+				</div>
+				<!-- <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js" defer></script> -->
+				<script type="module" nonce="${nonce}" src="${modelViewerUri}"></script>
+				<script type="module" nonce="${nonce}" src="${scriptUri}"></script>
 			</body>
-			</html>`;
+		</html>`;
 	}
 }
 function getNonce() {
