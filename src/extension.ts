@@ -18,6 +18,8 @@ const previewManager = new PreviewManager();
 export function activate(context: vscode.ExtensionContext): void {
     console.log('Activating openscad extension');
 
+    previewManager.setContext(context);
+
     if (vscode.window.registerWebviewPanelSerializer) {
 		// Make sure we register a serializer in activation event
 		vscode.window.registerWebviewPanelSerializer(PreviewPanel.viewType, {

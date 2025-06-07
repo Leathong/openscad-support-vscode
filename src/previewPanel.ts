@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import OpenSCAD from '../openscad-wasm/openscad';
 
 export function getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
 	return {
@@ -9,6 +10,8 @@ export function getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptio
 		localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'media')]
 	};
 }
+
+export type MergedOutputs = {stdout?: string, stderr?: string, error?: string}[];
 
 /**
  * Manages preview webview panels
@@ -87,10 +90,29 @@ export class PreviewPanel {
 		);
 	}
 
-	public doRefactor() {
-		// Send a message to the webview webview.
-		// You can send any JSON serializable data.
-		this._panel.webview.postMessage({ command: 'refactor' });
+	public async previewModel() {
+
+		const mergedOutputs: MergedOutputs = [];
+
+		const instance = await OpenSCAD({
+			noInitialRun: true, 
+			// @ts-expect-error
+			'print': (text: string) => {
+				console.debug('stdout: ' + text);
+				mergedOutputs.push({ stdout: text })
+			},
+			'printErr': (text: string) => {
+				console.debug('stderr: ' + text);
+				mergedOutputs.push({ stderr: text })
+			},
+		});
+		
+		console.log("OPENSCAD", instance);
+		instance.callMain([
+
+		]);
+		const message = {};
+		this._panel.webview.postMessage(message);
 	}
 
 	public dispose() {
@@ -150,8 +172,9 @@ export class PreviewPanel {
 				<!--
 					Use a content security policy to only allow loading images from https or from our extension directory,
 					and only allow scripts that have a specific nonce.
+					TODO: disabled for now because model-viewer fails its fetches. Re-enable once things generally work
 				-->
-				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; img-src ${webview.cspSource} https:; script-src 'nonce-${nonce}';">
+				<!-- <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; img-src ${webview.cspSource} https:; script-src 'nonce-${nonce}';"> -->
 
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 

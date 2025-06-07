@@ -39,8 +39,11 @@ class MessageItem implements vscode.QuickPickItem {
 export class PreviewManager {
     private previewStore = new PreviewStore();
     private config: ScadConfig = {};
+    private extensionPath: vscode.Uri | undefined;
 
-    // public activate() {}
+    public setContext(context: vscode.ExtensionContext) {
+        this.extensionPath = context.extensionUri;
+    }
 
     // Opens file in OpenSCAD
     public openFile(
@@ -65,7 +68,8 @@ export class PreviewManager {
             if (DEBUG) console.log(`uri: ${resource}`); // DEBUG
 
             if (this.config.inlinePreview) {
-                PreviewPanel.createOrShow(resource);
+                PreviewPanel.createOrShow(this.extensionPath!);
+                await PreviewPanel.currentPanel?.previewModel();
             } else {
                 // Check if a new preview can be opened
                 if (!this.canOpenNewExternalPreview(resource, args)) return;
