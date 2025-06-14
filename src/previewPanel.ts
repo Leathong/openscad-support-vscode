@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import {promises as fsPromises} from "fs";
-import {dirname, join as joinPath, extname} from "path";
+import { promises as fsPromises } from "fs";
+import { dirname, join as joinPath, extname } from "path";
 import getOpenSCAD, { type OpenSCAD } from "../openscad-wasm/openscad.js";
 import { exportGlb, parseOff } from './export_glb.js';
 
@@ -60,7 +60,7 @@ export class PreviewPanel {
 		this._panel = panel;
 		this._extensionUri = extensionUri;
 		this._openSCAD = getOpenSCAD({
-			noInitialRun: true, 
+			noInitialRun: true,
 			print: (text) => {
 				console.debug('stdout: ' + text);
 			},
@@ -105,12 +105,12 @@ export class PreviewPanel {
 
 	private previewModelName = 'model.glb';
 	private modelUpdated() {
-		const message: VSCodeHostMessage = {type: "Model", value: this._panel.webview.asWebviewUri(this.tmpModelPath(this.previewModelName)).toString()};
+		const message: VSCodeHostMessage = { type: "Model", value: this._panel.webview.asWebviewUri(this.tmpModelPath(this.previewModelName)).toString() };
 		this._panel.webview.postMessage(message);
 	}
 
 	private handlePanelMessage(event: VSCodeHostMessage) {
-		switch(event.type) {
+		switch (event.type) {
 			case "Ready":
 				this.modelUpdated();
 				return true;
@@ -133,7 +133,7 @@ export class PreviewPanel {
 			prefixLines.push('$preview=true;');
 		}
 		if (!modelPath.endsWith('.scad')) throw new Error('First source must be a .scad file, got ' + modelPath + ' instead');
-		
+
 		const oContent = await fsPromises.readFile(modelPath, "utf-8") || "";
 		const parentDir = dirname(modelPath);
 
@@ -188,9 +188,9 @@ export class PreviewPanel {
 		const scriptUri = webview.asWebviewUri(scriptPathOnDisk);
 
 		// Local path to css styles
-		const styleResetPath = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview','reset.css');
-		const stylesPathVSCodePath = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview','vscode.css');
-		const stylesPathMainPath = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview','main.css');
+		const styleResetPath = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview', 'reset.css');
+		const stylesPathVSCodePath = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview', 'vscode.css');
+		const stylesPathMainPath = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview', 'main.css');
 
 		// Uri to load styles into webview
 		const stylesResetUri = webview.asWebviewUri(styleResetPath);
@@ -198,8 +198,8 @@ export class PreviewPanel {
 		const stylesMainUri = webview.asWebviewUri(stylesPathMainPath);
 
 		// Local path to other assets
-		const skybox = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview','skybox.jpg');
-		const axes = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview','axes.glb');
+		const skybox = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview', 'skybox.jpg');
+		const axes = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview', 'axes.glb');
 
 		const skyboxUri = webview.asWebviewUri(skybox);
 		const axesUri = webview.asWebviewUri(axes);
@@ -276,11 +276,11 @@ function getNonce() {
 
 
 function formatValue(any: any): string {
-  if (typeof any === 'string') {
-    return `"${any}"`;
-  } else if (any instanceof Array) {
-    return `[${any.map(formatValue).join(', ')}]`;
-  } else {
-    return `${any}`;
-  }
+	if (typeof any === 'string') {
+		return `"${any}"`;
+	} else if (any instanceof Array) {
+		return `[${any.map(formatValue).join(', ')}]`;
+	} else {
+		return `${any}`;
+	}
 }

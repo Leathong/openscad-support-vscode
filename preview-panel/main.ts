@@ -5,17 +5,17 @@ const vscode = acquireVsCodeApi();
 
 const oldState = vscode.getState() || {};
 
-let updateModel = (uri: string) => {}
+let updateModel = (uri: string) => { }
 
 // Handle messages sent from the extension to the webview
 window.addEventListener('message', (event) => {
-  const d = event.data as VSCodeHostMessage;
-  switch(d.type) {
-    case "Model":
-		vscode.setState({modelURI: d.value});
-		updateModel(d.value);
-		break;
-  }
+	const d = event.data as VSCodeHostMessage;
+	switch (d.type) {
+		case "Model":
+			vscode.setState({ modelURI: d.value });
+			updateModel(d.value);
+			break;
+	}
 });
 
 const main = () => {
@@ -23,7 +23,7 @@ const main = () => {
 	if (oldState.modelURI) {
 		updateModel(oldState.modelURI);
 	}
-	vscode.postMessage({type: "Ready"});
+	vscode.postMessage({ type: "Ready" });
 };
 
 if (document.readyState === 'loading') {

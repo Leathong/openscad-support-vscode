@@ -21,16 +21,15 @@ export function activate(context: vscode.ExtensionContext): void {
     previewManager.setContext(context);
 
     if (vscode.window.registerWebviewPanelSerializer) {
-		// Make sure we register a serializer in activation event
-		vscode.window.registerWebviewPanelSerializer(PreviewPanel.viewType, {
-			async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: unknown) {
-				console.log(`Got state: ${state}`);
-				// Reset the webview options so we use latest uri for `localResourceRoots`.
-				webviewPanel.webview.options = getWebviewOptions(context.extensionUri);
-				PreviewPanel.revive(webviewPanel, context.extensionUri);
-			}
-		});
-	}
+        // Make sure we register a serializer in activation event
+        vscode.window.registerWebviewPanelSerializer(PreviewPanel.viewType, {
+            async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: unknown) {
+                // Reset the webview options so we use latest uri for `localResourceRoots`.
+                webviewPanel.webview.options = getWebviewOptions(context.extensionUri);
+                PreviewPanel.revive(webviewPanel, context.extensionUri);
+            }
+        });
+    }
 
     // Register commands
     context.subscriptions.push(

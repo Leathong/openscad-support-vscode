@@ -1,10 +1,10 @@
-export {};
+export { };
 
 declare global {
     type OpenSCADPreviewState = {
         modelURI?: string
     };
-    type VSCodeHostMessage = {type: "Ready"} | {type: "Model", value: string};
+    type VSCodeHostMessage = { type: "Ready" } | { type: "Model", value: string };
 
     function acquireVsCodeApi(): {
         getState(): OpenSCADPreviewState;
