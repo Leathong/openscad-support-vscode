@@ -151,11 +151,11 @@
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./ && tsc -p ./preview-panel",
         "lint": "eslint -c .eslintrc.json --ext .ts src",
+        "compile": "tsc -p ./ && node esbuild.mjs",
         "format": "prettier --config .prettierrc.json --write ./src/**/*.ts && eslint -c .eslintrc.json --ext .ts src --fix",
         "watch": "tsc -watch -p ./",
-        "watch-preview-panel": "tsc -watch -p ./preview-panel",
+        "watch-preview-panel": "node esbuild.mjs --watch",
         "update-grammar": "js-yaml syntaxes/scad.yaml-tmLanguage > syntaxes/scad.tmLanguage.json"
     },
     "devDependencies": {
@@ -165,6 +165,7 @@
         "@types/vscode": "^1.44.0",
         "@typescript-eslint/eslint-plugin": "^5.2.0",
         "@typescript-eslint/parser": "^5.0.0",
+        "esbuild": "^0.25.5",
         "eslint": "^8.0.0",
         "eslint-config-prettier": "^7.2.0",
         "eslint-config-vscode-ext": "^1.0.0",

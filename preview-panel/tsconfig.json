@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
-		"module": "commonjs",
-		"target": "esnext",
+		"moduleResolution": "node",
+		"target": "es6",
 		"outDir": "../out/preview",
 		"sourceMap": true,
 		"strict": true,
