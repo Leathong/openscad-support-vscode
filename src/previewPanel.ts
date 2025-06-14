@@ -10,7 +10,7 @@ export function getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptio
 		enableScripts: true,
 
 		// And restrict the webview to only loading content from our extension's `media` directory.
-		localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'media')]
+		localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'media'), vscode.Uri.joinPath(extensionUri, 'out', 'preview')]
 	};
 }
 
