@@ -1,3 +1,7 @@
+import type {ModelViewerElement} from "@google/model-viewer";
+
+// A minimal non-react version of
+// https://github.com/openscad/openscad-playground/blob/main/src/components/ViewerPanel.tsx
 
 export const PREDEFINED_ORBITS: [string, number, number][] = [
   ["Diagonal", Math.PI / 4, Math.PI / 4],
@@ -37,5 +41,73 @@ function getClosestPredefinedOrbitIndex(theta: number, phi: number): [number, nu
 const originalOrbit = (([name, theta, phi]) => `${theta}rad ${phi}rad auto`)(PREDEFINED_ORBITS[0]);
 
 export const initViewer = () => {
-  
+    const modelViewerEl = document.getElementById("preview-model") as ModelViewerElement;
+    const axesViewerEl = document.getElementById("model-axes") as ModelViewerElement;
+
+    for (const el of [modelViewerEl, axesViewerEl]) {
+      const otherEl = el === modelViewerEl ? axesViewerEl : modelViewerEl;
+      function handleCameraChange(e: any) {
+          if (e.detail.source === 'user-interaction') {
+            const cameraOrbit = el.getCameraOrbit();
+            cameraOrbit.radius = otherEl.getCameraOrbit().radius;
+            otherEl.cameraOrbit = cameraOrbit.toString();
+          }
+        }
+        el.addEventListener('camera-change', handleCameraChange);
+        // return () => el.removeEventListener('camera-change', handleCameraChange);
+    }
+    axesViewerEl.setAttribute("camera-orbit", originalOrbit);
+    modelViewerEl.setAttribute("camera-orbit", originalOrbit);
+
+    // modelViewerEl.addEventListener("load", () => {
+      
+    // })
+    modelViewerEl.addEventListener("error", (e) => {
+      console.error("Model Viewer Error", e);
+    })
+
+    // Cycle through predefined views when user clicks on the axes viewer
+    let mouseDownSpherePoint: [number, number, number] | undefined;
+    function getSpherePoint() {
+      const orbit = axesViewerEl.getCameraOrbit();
+      return spherePoint(orbit.theta, orbit.phi);
+    }
+    function onMouseDown(e: MouseEvent) {
+      if (e.target === axesViewerEl) {
+        mouseDownSpherePoint = getSpherePoint();
+      }
+    }
+    function onMouseUp(e: MouseEvent) {
+      if (e.target === axesViewerEl) {
+        const euclEps = 0.01;
+        const radEps = 0.1;
+
+        const spherePoint = getSpherePoint();
+        const clickDist = mouseDownSpherePoint ? euclideanDist(spherePoint, mouseDownSpherePoint) : Infinity;
+        if (clickDist > euclEps) {
+          return;
+        }
+        // Note: unlike the axes viewer, the model viewer has a prompt that makes the model wiggle around, we only fetch it to get the radius.
+        const axesOrbit = axesViewerEl.getCameraOrbit();
+        const modelOrbit = axesViewerEl.getCameraOrbit();
+        const [currentIndex, dist, radDist] = getClosestPredefinedOrbitIndex(axesOrbit.theta, axesOrbit.phi);
+        const newIndex = dist < euclEps && radDist < radEps ? (currentIndex + 1) % PREDEFINED_ORBITS.length : currentIndex;
+        const [name, theta, phi] = PREDEFINED_ORBITS[newIndex];
+        Object.assign(modelOrbit, {theta, phi});
+        const newOrbit = axesViewerEl.cameraOrbit = axesViewerEl.cameraOrbit = modelOrbit.toString();
+        modelViewerEl.setAttribute("interaction-prompt", "none");
+      }
+    }
+    window.addEventListener('mousedown', onMouseDown);
+    window.addEventListener('mouseup', onMouseUp);
+    // return () => {
+    //   window.removeEventListener('mousedown', onMouseDown);
+    //   window.removeEventListener('mouseup', onMouseUp);
+    // };
+
+    const redraw = (uri: string) => {
+      modelViewerEl.setAttribute("src", uri);
+    }
+
+  return redraw
 }

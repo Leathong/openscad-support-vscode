@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import {promises as fsPromises} from "fs";
 import {dirname, join as joinPath, extname} from "path";
-import OpenSCAD from "../openscad-wasm/openscad.js";
+import getOpenSCAD, { type OpenSCAD } from "../openscad-wasm/openscad.js";
+import { exportGlb, parseOff } from './export_glb.js';
 
 export function getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
 	return {
@@ -12,8 +13,6 @@ export function getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptio
 		localResourceRoots: [vscode.Uri.joinPath(extensionUri, 'media')]
 	};
 }
-
-export type MergedOutputs = {stdout?: string, stderr?: string, error?: string}[];
 
 /**
  * Manages preview webview panels
@@ -28,6 +27,7 @@ export class PreviewPanel {
 
 	private readonly _panel: vscode.WebviewPanel;
 	private readonly _extensionUri: vscode.Uri;
+	private readonly _openSCAD: Promise<OpenSCAD>;
 	private _disposables: vscode.Disposable[] = [];
 
 	public static createOrShow(extensionUri: vscode.Uri) {
@@ -59,6 +59,15 @@ export class PreviewPanel {
 	private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
 		this._panel = panel;
 		this._extensionUri = extensionUri;
+		this._openSCAD = getOpenSCAD({
+			noInitialRun: true, 
+			print: (text) => {
+				console.debug('stdout: ' + text);
+			},
+			printErr: (text) => {
+				console.debug('stderr: ' + text);
+			},
+		});
 
 		// Set the webview's initial html content
 		this._update();
@@ -81,6 +90,8 @@ export class PreviewPanel {
 		// Handle messages from the webview
 		this._panel.webview.onDidReceiveMessage(
 			message => {
+				const handled = this.handlePanelMessage(message);
+				if (handled) return;
 				switch (message.command) {
 					case 'alert':
 						vscode.window.showErrorMessage(message.text);
@@ -92,23 +103,27 @@ export class PreviewPanel {
 		);
 	}
 
-	public async previewModel(modelPath: string) {
-		const mergedOutputs: MergedOutputs = [];
-		
-		const instance = await OpenSCAD({
-			noInitialRun: true, 
-			print: (text) => {
-				console.debug('stdout: ' + text);
-				mergedOutputs.push({ stdout: text })
-			},
-			printErr: (text) => {
-				console.debug('stderr: ' + text);
-				mergedOutputs.push({ stderr: text })
-			},
-		});
+	private previewModelName = 'model.glb';
+	private modelUpdated() {
+		const message: VSCodeHostMessage = {type: "Model", value: this._panel.webview.asWebviewUri(this.tmpModelPath(this.previewModelName)).toString()};
+		this._panel.webview.postMessage(message);
+	}
 
+	private handlePanelMessage(event: VSCodeHostMessage) {
+		switch(event.type) {
+			case "Ready":
+				this.modelUpdated();
+				return true;
+		}
+	}
+
+	private tmpModelPath(filename: string) {
+		return vscode.Uri.joinPath(this._extensionUri, 'media', 'preview', 'models', filename);
+	}
+
+	public async updatePreviewModel(modelPath: string) {
 		const isPreview = true;
-		const vars = "";
+		const vars = {};
 		const features: string[] = [];
 		const extraArgs: string[] = [];
 
@@ -124,35 +139,25 @@ export class PreviewPanel {
 
 		const content = [...prefixLines, oContent].join('\n');
 
-		// const actualRenderFormat = renderFormat == 'glb' || renderFormat == '3mf' ? 'off' : renderFormat;
-		const actualRenderFormat = "stl";
 		const stem = modelPath.replace(/\.scad$/, '').split('/').pop();
-		const outFile = joinPath(parentDir, `${stem}.${actualRenderFormat}`);
+		const outFile = this.tmpModelPath(`${stem}.off`).fsPath;
 		const inFile = joinPath(parentDir, `${stem}-tmp${extname(modelPath)}`);
 
-		try {
-          console.log(`Writing ${inFile}`);
-		  instance.FS.writeFile(inFile, content);
-        } catch (e) {
-          console.trace(e);
-          throw new Error(`Error while trying to write ${inFile}: ${e}`);
-        }
-
-		instance.callMain([
+		await fsPromises.writeFile(inFile, content);
+		(await this._openSCAD).callMain([
 			inFile,
 			"-o", outFile,
 			"--backend=manifold",
-			"--export-format=" + (actualRenderFormat == 'stl' ? 'binstl' : actualRenderFormat),
+			"--export-format=off",
 			...(Object.entries(vars ?? {}).flatMap(([k, v]) => [`-D${k}=${formatValue(v)}`])),
 			...(features ?? []).map(f => `--enable=${f}`),
 			...(extraArgs ?? [])
 		]);
+		const modelContent = await fsPromises.readFile(outFile, "utf-8");
+		const glbModelData = await exportGlb(parseOff(modelContent));
+		await fsPromises.writeFile(this.tmpModelPath(this.previewModelName).fsPath, glbModelData);
 
-		console.log(mergedOutputs);
-		const modelContent = instance.FS.readFile(outFile);
-
-		const message = {type: "model", value: modelContent};
-		this._panel.webview.postMessage(message);
+		this.modelUpdated();
 	}
 
 	public dispose() {
@@ -177,12 +182,10 @@ export class PreviewPanel {
 
 	private _getHtmlForWebview(webview: vscode.Webview, column?: vscode.ViewColumn) {
 		// Local path to main script run in the webview
-		const scriptPathOnDisk = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview', 'main.js');
-		const modelViewerPathOnDisk = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview', 'model-viewer.min.js');
+		const scriptPathOnDisk = vscode.Uri.joinPath(this._extensionUri, 'out', 'preview', 'main.js');
 
 		// And the uri we use to load this script in the webview
 		const scriptUri = webview.asWebviewUri(scriptPathOnDisk);
-		const modelViewerUri = webview.asWebviewUri(modelViewerPathOnDisk);
 
 		// Local path to css styles
 		const styleResetPath = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview','reset.css');
@@ -195,14 +198,14 @@ export class PreviewPanel {
 		const stylesMainUri = webview.asWebviewUri(stylesPathMainPath);
 
 		// Local path to other assets
-		const skyboxLights = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview','skybox-lights.jpg');
+		const skybox = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview','skybox.jpg');
 		const axes = vscode.Uri.joinPath(this._extensionUri, 'media', 'preview','axes.glb');
 
-		const skyboxLightsUri = webview.asWebviewUri(skyboxLights);
+		const skyboxUri = webview.asWebviewUri(skybox);
 		const axesUri = webview.asWebviewUri(axes);
 
 		// Use a nonce to only allow specific scripts to be run
-		const nonce = getNonce();
+		const scriptNonce = getNonce();
 
 		return `<!DOCTYPE html>
 			<html lang="en">
@@ -214,7 +217,7 @@ export class PreviewPanel {
 					and only allow scripts that have a specific nonce.
 					TODO: disabled for now because model-viewer fails its fetches. Re-enable once things generally work
 				-->
-				<!-- <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; img-src ${webview.cspSource} https:; script-src 'nonce-${nonce}';"> -->
+				<!-- <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; img-src ${webview.cspSource} https:; script-src 'nonce-${scriptNonce}';"> -->
 
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -230,12 +233,11 @@ export class PreviewPanel {
 					<model-viewer
 						id="preview-model"
 						orientation="0deg -90deg 0deg"
-						class="main-viewer"
-						environment-image="${skyboxLightsUri}"
+						environment-image="${skyboxUri}"
+						interaction-prompt="auto"
 						max-camera-orbit="auto 180deg auto"
 						min-camera-orbit="auto 0deg auto"
 						camera-controls
-						ar
 					>
 						<span slot="progress-bar"></span>
 					</model-viewer>
@@ -245,7 +247,7 @@ export class PreviewPanel {
 						src="${axesUri}"
 						loading="eager"
 						// interpolation-decay="0"
-						environment-image="${skyboxLightsUri}"
+						environment-image="${skyboxUri}"
 						max-camera-orbit="auto 180deg auto"
 						min-camera-orbit="auto 0deg auto"
 						orbit-sensitivity="5"
@@ -258,9 +260,7 @@ export class PreviewPanel {
 						<span slot="progress-bar"></span>
 					</model-viewer>
 				</div>
-				<!-- <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js" defer></script> -->
-				<script type="module" nonce="${nonce}" src="${modelViewerUri}"></script>
-				<script type="module" nonce="${nonce}" src="${scriptUri}"></script>
+				<script type="module" nonce="${scriptNonce}" src="${scriptUri}"></script>
 			</body>
 		</html>`;
 	}

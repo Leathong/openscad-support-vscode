@@ -69,7 +69,7 @@ export class PreviewManager {
 
             if (this.config.inlinePreview) {
                 PreviewPanel.createOrShow(this.extensionPath!);
-                await PreviewPanel.currentPanel?.previewModel(resource.fsPath);
+                await PreviewPanel.currentPanel?.updatePreviewModel(resource.fsPath);
             } else {
                 // Check if a new preview can be opened
                 if (!this.canOpenNewExternalPreview(resource, args)) return;

@@ -1,23 +1,35 @@
-import {initViewer} from "./viewer";
+import "@google/model-viewer";
+import { initViewer } from './viewer';
 
 const vscode = acquireVsCodeApi();
 
 const oldState = vscode.getState() || {};
 
+let updateModel = (uri: string) => {}
+
 // Handle messages sent from the extension to the webview
-window.addEventListener("message", (event) => {
-    console.log(event.data);
-    const message = event.data; // The json data that the extension sent
-    switch (message.type) {
-    }
+window.addEventListener('message', (event) => {
+  const d = event.data as VSCodeHostMessage;
+  switch(d.type) {
+    case "Model":
+		vscode.setState({modelURI: d.value});
+		updateModel(d.value);
+		break;
+  }
 });
 
-function onAction() {
-  vscode.postMessage({ type: "todo", value: "todo" });
-}
-
 const main = () => {
-    initViewer();
-}
+	updateModel = initViewer();
+	if (oldState.modelURI) {
+		updateModel(oldState.modelURI);
+	}
+	vscode.postMessage({type: "Ready"});
+};
 
-window.addEventListener("load", () => main())
+if (document.readyState === 'loading') {
+	// Loading hasn't finished yet
+	document.addEventListener('DOMContentLoaded', () => main());
+} else {
+	// `DOMContentLoaded` has already fired
+	main();
+}
