@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
-import OpenSCAD from '../openscad-wasm/openscad';
+import {promises as fsPromises} from "fs";
+import {dirname, join as joinPath, extname} from "path";
+import OpenSCAD from "../openscad-wasm/openscad.js";
 
 export function getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
 	return {
@@ -90,28 +92,66 @@ export class PreviewPanel {
 		);
 	}
 
-	public async previewModel() {
-
+	public async previewModel(modelPath: string) {
 		const mergedOutputs: MergedOutputs = [];
-
+		
 		const instance = await OpenSCAD({
 			noInitialRun: true, 
-			// @ts-expect-error
-			'print': (text: string) => {
+			print: (text) => {
 				console.debug('stdout: ' + text);
 				mergedOutputs.push({ stdout: text })
 			},
-			'printErr': (text: string) => {
+			printErr: (text) => {
 				console.debug('stderr: ' + text);
 				mergedOutputs.push({ stderr: text })
 			},
 		});
-		
-		console.log("OPENSCAD", instance);
-		instance.callMain([
 
+		const isPreview = true;
+		const vars = "";
+		const features: string[] = [];
+		const extraArgs: string[] = [];
+
+		const prefixLines: string[] = [];
+		if (isPreview) {
+			// TODO: add render-modifiers feature to OpenSCAD.
+			prefixLines.push('$preview=true;');
+		}
+		if (!modelPath.endsWith('.scad')) throw new Error('First source must be a .scad file, got ' + modelPath + ' instead');
+		
+		const oContent = await fsPromises.readFile(modelPath, "utf-8") || "";
+		const parentDir = dirname(modelPath);
+
+		const content = [...prefixLines, oContent].join('\n');
+
+		// const actualRenderFormat = renderFormat == 'glb' || renderFormat == '3mf' ? 'off' : renderFormat;
+		const actualRenderFormat = "stl";
+		const stem = modelPath.replace(/\.scad$/, '').split('/').pop();
+		const outFile = joinPath(parentDir, `${stem}.${actualRenderFormat}`);
+		const inFile = joinPath(parentDir, `${stem}-tmp${extname(modelPath)}`);
+
+		try {
+          console.log(`Writing ${inFile}`);
+		  instance.FS.writeFile(inFile, content);
+        } catch (e) {
+          console.trace(e);
+          throw new Error(`Error while trying to write ${inFile}: ${e}`);
+        }
+
+		instance.callMain([
+			inFile,
+			"-o", outFile,
+			"--backend=manifold",
+			"--export-format=" + (actualRenderFormat == 'stl' ? 'binstl' : actualRenderFormat),
+			...(Object.entries(vars ?? {}).flatMap(([k, v]) => [`-D${k}=${formatValue(v)}`])),
+			...(features ?? []).map(f => `--enable=${f}`),
+			...(extraArgs ?? [])
 		]);
-		const message = {};
+
+		console.log(mergedOutputs);
+		const modelContent = instance.FS.readFile(outFile);
+
+		const message = {type: "model", value: modelContent};
 		this._panel.webview.postMessage(message);
 	}
 
@@ -232,4 +272,15 @@ function getNonce() {
 		text += possible.charAt(Math.floor(Math.random() * possible.length));
 	}
 	return text;
+}
+
+
+function formatValue(any: any): string {
+  if (typeof any === 'string') {
+    return `"${any}"`;
+  } else if (any instanceof Array) {
+    return `[${any.map(formatValue).join(', ')}]`;
+  } else {
+    return `${any}`;
+  }
 }
