@@ -15,5 +15,5 @@
 		"preview-panel",
 		"node_modules", 
 		".vscode-test"
-	],
+	]
 }

@@ -1,8 +1,5 @@
+import { fork } from 'child_process';
 import * as vscode from 'vscode';
-import { promises as fsPromises } from "fs";
-import { dirname, join as joinPath, extname } from "path";
-import getOpenSCAD, { type OpenSCAD } from "../openscad-wasm/openscad.js";
-import { exportGlb, parseOff } from './export_glb.js';
 
 export function getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
 	return {
@@ -27,7 +24,6 @@ export class PreviewPanel {
 
 	private readonly _panel: vscode.WebviewPanel;
 	private readonly _extensionUri: vscode.Uri;
-	private readonly _openSCAD: Promise<OpenSCAD>;
 	private _disposables: vscode.Disposable[] = [];
 
 	public static createOrShow(extensionUri: vscode.Uri) {
@@ -59,15 +55,6 @@ export class PreviewPanel {
 	private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
 		this._panel = panel;
 		this._extensionUri = extensionUri;
-		this._openSCAD = getOpenSCAD({
-			noInitialRun: true,
-			print: (text) => {
-				console.debug('stdout: ' + text);
-			},
-			printErr: (text) => {
-				console.debug('stderr: ' + text);
-			},
-		});
 
 		// Set the webview's initial html content
 		this._update();
@@ -79,9 +66,7 @@ export class PreviewPanel {
 		// Update the content based on view changes
 		this._panel.onDidChangeViewState(
 			() => {
-				if (this._panel.visible) {
-					this._update();
-				}
+				// This is triggered when layout is changed - if the view is not fully responsive we may need to send something here.
 			},
 			null,
 			this._disposables
@@ -105,7 +90,12 @@ export class PreviewPanel {
 
 	private previewModelName = 'model.glb';
 	private modelUpdated() {
-		const message: VSCodeHostMessage = { type: "Model", value: this._panel.webview.asWebviewUri(this.tmpModelPath(this.previewModelName)).toString() };
+		const message: VSCodeHostMessage = {
+			type: "Model",
+			value: this._panel.webview.asWebviewUri(
+				vscode.Uri.joinPath(this.tmpModelDir, this.previewModelName)
+			).toString()
+		};
 		this._panel.webview.postMessage(message);
 	}
 
@@ -117,47 +107,33 @@ export class PreviewPanel {
 		}
 	}
 
-	private tmpModelPath(filename: string) {
-		return vscode.Uri.joinPath(this._extensionUri, 'media', 'preview', 'models', filename);
+	private get tmpModelDir() {
+		return vscode.Uri.joinPath(this._extensionUri, 'media', 'preview', 'models');
+	}
+	private get renderProcessPath() {
+		return vscode.Uri.joinPath(this._extensionUri, 'out', 'renderer', 'index.js');
 	}
 
 	public async updatePreviewModel(modelPath: string) {
-		const isPreview = true;
-		const vars = {};
-		const features: string[] = [];
-		const extraArgs: string[] = [];
-
-		const prefixLines: string[] = [];
-		if (isPreview) {
-			// TODO: add render-modifiers feature to OpenSCAD.
-			prefixLines.push('$preview=true;');
-		}
-		if (!modelPath.endsWith('.scad')) throw new Error('First source must be a .scad file, got ' + modelPath + ' instead');
-
-		const oContent = await fsPromises.readFile(modelPath, "utf-8") || "";
-		const parentDir = dirname(modelPath);
-
-		const content = [...prefixLines, oContent].join('\n');
-
-		const stem = modelPath.replace(/\.scad$/, '').split('/').pop();
-		const outFile = this.tmpModelPath(`${stem}.off`).fsPath;
-		const inFile = joinPath(parentDir, `${stem}-tmp${extname(modelPath)}`);
-
-		await fsPromises.writeFile(inFile, content);
-		(await this._openSCAD).callMain([
-			inFile,
-			"-o", outFile,
-			"--backend=manifold",
-			"--export-format=off",
-			...(Object.entries(vars ?? {}).flatMap(([k, v]) => [`-D${k}=${formatValue(v)}`])),
-			...(features ?? []).map(f => `--enable=${f}`),
-			...(extraArgs ?? [])
-		]);
-		const modelContent = await fsPromises.readFile(outFile, "utf-8");
-		const glbModelData = await exportGlb(parseOff(modelContent));
-		await fsPromises.writeFile(this.tmpModelPath(this.previewModelName).fsPath, glbModelData);
-
-		this.modelUpdated();
+		// TODO: show loading
+		const child = fork(this.renderProcessPath.fsPath, [
+			modelPath,
+			this.tmpModelDir.fsPath,
+			this.previewModelName
+		], {
+			
+		});
+		child.addListener("error", (e) => {
+			// TODO show alert, hide loading
+		});
+		child.addListener("exit", (code) => {
+			// hide loading
+			if (code === 0) {
+				this.modelUpdated();
+			} else {
+				// TODO: show alert
+			}
+		});
 	}
 
 	public dispose() {
@@ -238,6 +214,7 @@ export class PreviewPanel {
 						max-camera-orbit="auto 180deg auto"
 						min-camera-orbit="auto 0deg auto"
 						camera-controls
+						ar
 					>
 						<span slot="progress-bar"></span>
 					</model-viewer>
@@ -272,15 +249,4 @@ function getNonce() {
 		text += possible.charAt(Math.floor(Math.random() * possible.length));
 	}
 	return text;
-}
-
-
-function formatValue(any: any): string {
-	if (typeof any === 'string') {
-		return `"${any}"`;
-	} else if (any instanceof Array) {
-		return `[${any.map(formatValue).join(', ')}]`;
-	} else {
-		return `${any}`;
-	}
 }
