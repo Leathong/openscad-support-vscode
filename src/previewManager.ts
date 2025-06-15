@@ -8,7 +8,7 @@ import * as vscode from 'vscode';
 import * as path from 'path';
 import { ScadConfig, DEBUG } from './config';
 import { ExternalPreview } from './externalPreview';
-import { PreviewStore } from './previewStore';
+import { ExternalPreviewStore } from './previewStore';
 import { PreviewPanel } from './previewPanel';
 
 // PreviewItems used for `scad.kill` quick pick menu
@@ -37,7 +37,7 @@ class MessageItem implements vscode.QuickPickItem {
 
 // Launcher class to handle launching instance of scad
 export class PreviewManager {
-    private previewStore = new PreviewStore();
+    private previewStore = new ExternalPreviewStore();
     private config: ScadConfig = {};
     private extensionPath: vscode.Uri | undefined;
 
@@ -162,7 +162,7 @@ export class PreviewManager {
         else if (
             this.previewStore.get(
                 resource,
-                PreviewStore.getPreviewType(args)
+                ExternalPreviewStore.getPreviewType(args)
             ) !== undefined
         ) {
             if (DEBUG)

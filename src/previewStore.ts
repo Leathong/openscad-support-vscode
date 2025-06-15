@@ -10,7 +10,7 @@ import { ExternalPreview, PreviewType } from './externalPreview';
 import { DEBUG } from './config';
 
 // Used to keep track of Set of Previews
-export class PreviewStore /* extends vscode.Disposable */ {
+export class ExternalPreviewStore /* extends vscode.Disposable */ {
     private static readonly areOpenScadPreviewsContextKey =
         'areOpenScadPreviews';
 
@@ -26,7 +26,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
         this._previews.clear();
     }
 
-    // Defines: PreviewStore[]
+    // Defines: ExternalPreviewStore[]
     [Symbol.iterator](): Iterator<ExternalPreview> {
         return this._previews[Symbol.iterator]();
     }
@@ -60,7 +60,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
 
     // Create new preview (if not one with same uri) and then add it
     public createAndAdd(uri: vscode.Uri, args?: string[]): ExternalPreview | undefined {
-        const previewType = PreviewStore.getPreviewType(args);
+        const previewType = ExternalPreviewStore.getPreviewType(args);
 
         // Check there's not an existing preview of same type (can view and export same file)
         if (this.get(uri, previewType) === undefined) {
@@ -169,7 +169,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
     private setAreOpenPreviews(value: boolean): void {
         vscode.commands.executeCommand(
             'setContext',
-            PreviewStore.areOpenScadPreviewsContextKey,
+            ExternalPreviewStore.areOpenScadPreviewsContextKey,
             value
         );
     }
