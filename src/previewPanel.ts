@@ -1,4 +1,6 @@
 import { fork } from 'child_process';
+import { basename } from 'path';
+import Stream = require('stream');
 import * as vscode from 'vscode';
 
 export function getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
@@ -115,24 +117,43 @@ export class PreviewPanel {
 	}
 
 	public updatePreviewModel(modelPath: string) {
-		// TODO: show loading
-		const child = fork(this.renderProcessPath.fsPath, [
-			modelPath,
-			this.tmpModelDir.fsPath,
-			this.previewModelName
-		], {
-			
-		});
-		child.addListener("error", (e) => {
-			// TODO show alert, hide loading
-		});
-		child.addListener("exit", (code) => {
-			// hide loading
-			if (code === 0) {
-				this.modelUpdated();
-			} else {
-				// TODO: show alert
-			}
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Notification,
+			title: `rendering ${basename(modelPath)}...`,
+			cancellable: true
+		}, (progress, token) => {
+			const stdout = new Stream();
+			const stderr = new Stream();
+			const controller = new AbortController();
+			const { signal } = controller;
+			const child = fork(this.renderProcessPath.fsPath, [
+				modelPath,
+				this.tmpModelDir.fsPath,
+				this.previewModelName
+			], {
+				signal,
+			});
+			return new Promise<void>((finished, errored) => {
+				child.on("error", (e) => {
+					vscode.window.showErrorMessage(e.message);
+					errored(e);
+				});
+				child.on("exit", (code) => {
+					if (code === 0) {
+						this.modelUpdated();
+						finished();
+					} else {
+						// TODO: capture stderr from child process?
+						const message = `OpenSCAD render process ended with non-zero exit code ${code}`;
+						vscode.window.showErrorMessage(message);
+						errored(new Error(message));
+					}
+				});
+				token.onCancellationRequested(() => {
+					controller.abort();
+					finished();
+				});
+			});
 		});
 	}
 
