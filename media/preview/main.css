@@ -32,14 +32,9 @@ body {
 }
 
 #preview-model {
-	transition: opacity 0.5s;
-	opacity: 0;
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	&.loaded {
-		opacity: 1;
-	}
 }
 
 #model-axes {
