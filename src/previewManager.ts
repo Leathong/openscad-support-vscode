@@ -40,9 +40,23 @@ export class PreviewManager {
     private previewStore = new ExternalPreviewStore();
     private config: ScadConfig = {};
     private extensionPath: vscode.Uri | undefined;
+    private inlinePreviews = new Set<string>();
 
     public setContext(context: vscode.ExtensionContext) {
         this.extensionPath = context.extensionUri;
+    }
+
+    public maybeRemoveInlinePreview(resource: vscode.Uri) {
+        if (this.inlinePreviews.has(resource.fsPath)) {
+            this.inlinePreviews.delete(resource.fsPath);
+            // If we support multiple previews in the future, this would need to be more specific
+            PreviewPanel.currentPanel?.dispose();
+        }
+    }
+    public maybeReloadInlinePreview(resource: vscode.Uri) {
+        if (this.inlinePreviews.has(resource.fsPath)) {
+            PreviewPanel.currentPanel?.updatePreviewModel(resource.fsPath);
+        }
     }
 
     // Opens file in OpenSCAD
@@ -69,7 +83,10 @@ export class PreviewManager {
 
             if (this.config.inlinePreview) {
                 PreviewPanel.createOrShow(this.extensionPath!);
-                await PreviewPanel.currentPanel?.updatePreviewModel(resource.fsPath);
+                // If we support multiple preview panels in the future, just add.
+                this.inlinePreviews.clear();
+                this.inlinePreviews.add(resource.fsPath);
+                PreviewPanel.currentPanel?.updatePreviewModel(resource.fsPath);
             } else {
                 // Check if a new preview can be opened
                 if (!this.canOpenNewExternalPreview(resource, args)) return;

@@ -94,7 +94,7 @@ export class PreviewPanel {
 			type: "Model",
 			value: this._panel.webview.asWebviewUri(
 				vscode.Uri.joinPath(this.tmpModelDir, this.previewModelName)
-			).toString()
+			).toString() + `?b=${getNonce()}`
 		};
 		this._panel.webview.postMessage(message);
 	}
@@ -114,7 +114,7 @@ export class PreviewPanel {
 		return vscode.Uri.joinPath(this._extensionUri, 'out', 'renderer', 'index.js');
 	}
 
-	public async updatePreviewModel(modelPath: string) {
+	public updatePreviewModel(modelPath: string) {
 		// TODO: show loading
 		const child = fork(this.renderProcessPath.fsPath, [
 			modelPath,

@@ -44,6 +44,18 @@ export function activate(context: vscode.ExtensionContext): void {
         )
     );
 
+    // Register preview listeners
+    context.subscriptions.push(
+        vscode.workspace.onDidSaveTextDocument((doc) => {
+            previewManager.maybeReloadInlinePreview(doc.uri);
+        })
+    )
+    context.subscriptions.push(
+        vscode.workspace.onDidCloseTextDocument((doc) => {
+            previewManager.maybeRemoveInlinePreview(doc.uri);
+        })
+    )
+
     // Register status bar item
     context.subscriptions.push(Cheatsheet.getStatusBarItem());
 

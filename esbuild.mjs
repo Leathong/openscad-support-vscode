@@ -8,7 +8,7 @@ const buildContext = await esbuild.context({
   entryPoints: ['preview-panel/main.ts'],
   bundle: true,
   minify: true,
-  sourcemap: true,
+  sourcemap: "inline",
   target: ['chrome58'],
   outfile: 'out/preview/main.js',
 })
