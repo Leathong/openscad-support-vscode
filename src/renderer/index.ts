@@ -1,11 +1,14 @@
 import { promises as fsPromises } from "fs";
 import { dirname, join as joinPath, extname } from "path";
 import getOpenSCAD from "../../openscad-wasm/openscad.js";
+import { addFonts } from "../../openscad-wasm/openscad.fonts.js";
+import { addMCAD } from "../../openscad-wasm/openscad.mcad.js";
 import { exportGlb, parseOff } from './export_glb';
 
 // This file is run as a child process inside previewPanel
 const [modelPath, tmpDir, previewModelName] = process.argv.slice(2);
 render(modelPath, tmpDir, previewModelName).catch(e => {
+    console.error(e);
     // TODO: more elegant handling
     throw e;
 }).then(() => {
@@ -28,6 +31,8 @@ async function render(modelPath: string, tmpDir: string, previewModelName: strin
             console.debug('stderr: ' + text);
         },
     });
+    addFonts(openSCADInstance, tmpDir);
+    addMCAD(openSCADInstance, tmpDir);
 
     const prefixLines: string[] = [];
     if (isPreview) {
@@ -57,15 +62,15 @@ async function render(modelPath: string, tmpDir: string, previewModelName: strin
     ]);
     const modelContent = await fsPromises.readFile(outFile, "utf-8");
     const glbModelData = await exportGlb(parseOff(modelContent));
-    await fsPromises.writeFile(joinPath(tmpDir,previewModelName), glbModelData);
+    await fsPromises.writeFile(joinPath(tmpDir, previewModelName), glbModelData);
 }
 
 function formatValue(any: any): string {
-	if (typeof any === 'string') {
-		return `"${any}"`;
-	} else if (any instanceof Array) {
-		return `[${any.map(formatValue).join(', ')}]`;
-	} else {
-		return `${any}`;
-	}
+    if (typeof any === 'string') {
+        return `"${any}"`;
+    } else if (any instanceof Array) {
+        return `[${any.map(formatValue).join(', ')}]`;
+    } else {
+        return `${any}`;
+    }
 }
