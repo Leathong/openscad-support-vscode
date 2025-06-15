@@ -96,6 +96,7 @@ export const initViewer = () => {
 			Object.assign(modelOrbit, { theta, phi });
 			const newOrbit = axesViewerEl.cameraOrbit = axesViewerEl.cameraOrbit = modelOrbit.toString();
 			modelViewerEl.setAttribute("interaction-prompt", "none");
+			modelViewerEl.setAttribute("camera-orbit", newOrbit);
 		}
 	}
 	window.addEventListener('mousedown', onMouseDown);
