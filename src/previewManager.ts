@@ -42,6 +42,7 @@ export class PreviewManager {
     private extensionPath: vscode.Uri | undefined;
     private inlinePreviews = new Set<string>();
 
+    // public activate() {}
     public setContext(context: vscode.ExtensionContext) {
         this.extensionPath = context.extensionUri;
     }
@@ -68,7 +69,7 @@ export class PreviewManager {
         (Array.isArray(allUris) ? allUris : [mainUri]).forEach(async (uri) => {
             let resource: vscode.Uri;
 
-            if (DEBUG) console.log(`openFile: { main: ${mainUri}, all: ${allUris}, args: ${args}}`);   // DEBUG
+            // if (DEBUG) console.log(`openFile: { main: ${mainUri}, all: ${allUris}, args: ${args}}`);   // DEBUG
 
             // If uri not given, try opening activeTextEditor
             if (!(uri instanceof vscode.Uri)) {
@@ -79,7 +80,7 @@ export class PreviewManager {
             // Uri is given, set `resource`
             else resource = uri;
 
-            if (DEBUG) console.log(`uri: ${resource}`); // DEBUG
+            // if (DEBUG) console.log(`uri: ${resource}`); // DEBUG
 
             if (this.config.inlinePreview) {
                 PreviewPanel.createOrShow(this.extensionPath!);

@@ -212,9 +212,8 @@ export class PreviewPanel {
 				<!--
 					Use a content security policy to only allow loading images from https or from our extension directory,
 					and only allow scripts that have a specific nonce.
-					TODO: disabled for now because model-viewer fails its fetches. Re-enable once things generally work
 				-->
-				<!-- <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; img-src ${webview.cspSource} https:; script-src 'nonce-${scriptNonce}';"> -->
+				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; img-src ${webview.cspSource} https:; script-src 'nonce-${scriptNonce}';">
 
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
