@@ -28,7 +28,7 @@ export class PreviewPanel {
 
 	public static createOrShow(extensionUri: vscode.Uri) {
 		const column = vscode.window.activeTextEditor
-			? vscode.window.activeTextEditor.viewColumn
+			? vscode.ViewColumn.Beside
 			: undefined;
 
 		// If we already have a panel, show it.
