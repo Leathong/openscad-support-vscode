@@ -187,8 +187,7 @@ export class PreviewManager {
             if (DEBUG)
                 console.log(`File is already open: "${resource.fsPath}"`);
             vscode.window.showInformationMessage(
-                `${path.basename(resource.fsPath)} is already open: "${
-                    resource.fsPath
+                `${path.basename(resource.fsPath)} is already open: "${resource.fsPath
                 }"`
             );
             return false;

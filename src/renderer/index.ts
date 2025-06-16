@@ -1,4 +1,4 @@
-import { DEBUG, type PreviewTheme, type ScadConfig } from "../config";
+import { type ScadConfig } from "../config";
 import { promises as fsPromises } from "fs";
 import { join as joinPath } from "path";
 import getOpenSCAD from "../../openscad-wasm/openscad.js";
@@ -7,7 +7,7 @@ import { exportGlb, parseOff } from './export_glb';
 // This file is run as a child process inside previewPanel
 const [modelPath, tmpDir, previewModelName, libraryDir, configJSON] = process.argv.slice(2);
 render(modelPath, tmpDir, previewModelName, libraryDir, configJSON).catch(e => {
-    console.error(e);
+    process.stderr.write(`Error: ${e}`);
     // TODO: more elegant handling
     throw e;
 }).then(() => {
