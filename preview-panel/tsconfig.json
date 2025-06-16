@@ -1,0 +1,11 @@
+{
+	"compilerOptions": {
+		"moduleResolution": "node",
+		"target": "es6",
+		"outDir": "../out/preview",
+		"sourceMap": true,
+		"strict": true,
+		"rootDir": ".",
+	},
+    "include": ["./environment.d.ts", "./main.ts"]
+}

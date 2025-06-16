@@ -6,15 +6,15 @@
 
 import * as vscode from 'vscode';
 import { basename } from 'path';
-import { Preview, PreviewType } from './preview';
+import { ExternalPreview, PreviewType } from './externalPreview';
 import { DEBUG } from './config';
 
 // Used to keep track of Set of Previews
-export class PreviewStore /* extends vscode.Disposable */ {
+export class ExternalPreviewStore /* extends vscode.Disposable */ {
     private static readonly areOpenScadPreviewsContextKey =
         'areOpenScadPreviews';
 
-    private readonly _previews = new Set<Preview>();
+    private readonly _previews = new Set<ExternalPreview>();
     private _maxPreviews: number;
 
     // Dispose of the PreviewStore
@@ -26,8 +26,8 @@ export class PreviewStore /* extends vscode.Disposable */ {
         this._previews.clear();
     }
 
-    // Defines: PreviewStore[]
-    [Symbol.iterator](): Iterator<Preview> {
+    // Defines: ExternalPreviewStore[]
+    [Symbol.iterator](): Iterator<ExternalPreview> {
         return this._previews[Symbol.iterator]();
     }
 
@@ -42,7 +42,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
     public get(
         resource: vscode.Uri,
         previewType?: PreviewType
-    ): Preview | undefined {
+    ): ExternalPreview | undefined {
         for (const preview of this._previews) {
             if (preview.matchUri(resource, previewType)) {
                 return preview;
@@ -52,19 +52,19 @@ export class PreviewStore /* extends vscode.Disposable */ {
     }
 
     // Add preview
-    public add(preview: Preview): void {
+    public add(preview: ExternalPreview): void {
         this._previews.add(preview);
         preview.onKilled.subscribe(() => this._previews.delete(preview)); // Auto delete when killed
         this.setAreOpenPreviews(true);
     }
 
     // Create new preview (if not one with same uri) and then add it
-    public createAndAdd(uri: vscode.Uri, args?: string[]): Preview | undefined {
-        const previewType = PreviewStore.getPreviewType(args);
+    public createAndAdd(uri: vscode.Uri, args?: string[]): ExternalPreview | undefined {
+        const previewType = ExternalPreviewStore.getPreviewType(args);
 
         // Check there's not an existing preview of same type (can view and export same file)
         if (this.get(uri, previewType) === undefined) {
-            const newPreview = Preview.create(uri, previewType, args);
+            const newPreview = ExternalPreview.create(uri, previewType, args);
 
             if (!newPreview) return undefined;
 
@@ -78,7 +78,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
     }
 
     // Delete and dispose of a preview
-    public delete(preview: Preview, informUser?: boolean): void {
+    public delete(preview: ExternalPreview, informUser?: boolean): void {
         preview.dispose();
         if (informUser)
             vscode.window.showInformationMessage(
@@ -119,7 +119,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
     }
 
     // Create progress bar for exporting
-    public makeExportProgressBar(preview: Preview): void {
+    public makeExportProgressBar(preview: ExternalPreview): void {
         // Progress window
         vscode.window.withProgress(
             {
@@ -169,7 +169,7 @@ export class PreviewStore /* extends vscode.Disposable */ {
     private setAreOpenPreviews(value: boolean): void {
         vscode.commands.executeCommand(
             'setContext',
-            PreviewStore.areOpenScadPreviewsContextKey,
+            ExternalPreviewStore.areOpenScadPreviewsContextKey,
             value
         );
     }

@@ -9,6 +9,7 @@ import { Cheatsheet } from './cheatsheet';
 import { PreviewManager } from './previewManager';
 import { ScadClient } from './languageclient';
 import { DEBUG } from './config';
+import { getWebviewOptions, PreviewPanel } from './previewPanel';
 
 // New launch object
 const previewManager = new PreviewManager();
@@ -16,6 +17,19 @@ const previewManager = new PreviewManager();
 // Called when extension is activated
 export function activate(context: vscode.ExtensionContext): void {
     console.log('Activating openscad extension');
+
+    previewManager.setContext(context);
+
+    if (vscode.window.registerWebviewPanelSerializer) {
+        // Make sure we register a serializer in activation event
+        vscode.window.registerWebviewPanelSerializer(PreviewPanel.viewType, {
+            async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: unknown) {
+                // Reset the webview options so we use latest uri for `localResourceRoots`.
+                webviewPanel.webview.options = getWebviewOptions(context.extensionUri);
+                PreviewPanel.revive(webviewPanel, context.extensionUri, previewManager.config);
+            }
+        });
+    }
 
     // Register commands
     context.subscriptions.push(
@@ -29,6 +43,18 @@ export function activate(context: vscode.ExtensionContext): void {
             (mainUri, allUris) => previewManager.openFile(mainUri, allUris)
         )
     );
+
+    // Register preview listeners
+    context.subscriptions.push(
+        vscode.workspace.onDidSaveTextDocument((doc) => {
+            previewManager.maybeReloadInlinePreview(doc.uri);
+        })
+    )
+    context.subscriptions.push(
+        vscode.workspace.onDidCloseTextDocument((doc) => {
+            previewManager.maybeRemoveInlinePreview(doc.uri);
+        })
+    )
 
     // Register status bar item
     context.subscriptions.push(Cheatsheet.getStatusBarItem());

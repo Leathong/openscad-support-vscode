@@ -29,6 +29,9 @@ Project is available at: <https://github.com/Leathong/openscad-support-vscode>
 
 ## Settings
 
+- **scad-lsp.inlinePreview**:</br>
+  When enabled, shows previews directly in VSCode rather than opening externally.
+
 - **scad-lsp.searchPaths**:</br>
   The extension will read OPENSCADPATH Environment Variable to point to the library(s), or you can set search paths by this property.
 

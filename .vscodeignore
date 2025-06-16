@@ -17,6 +17,7 @@ tsconfig.json
 
 # Typescript files
 src/
+preview-panel/
 out/*.js.map
 *.vsix
 

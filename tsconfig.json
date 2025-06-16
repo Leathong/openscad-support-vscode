@@ -5,9 +5,14 @@
 		"outDir": "out",
 		"sourceMap": true,
 		"strict": true,
-		"rootDir": "src"
+		"rootDir": "src",
+		"types": [
+			"./preview-panel/environment"
+		],
+		"skipLibCheck": true,
 	},
 	"exclude": [
+		"preview-panel",
 		"node_modules", 
 		".vscode-test"
 	]
