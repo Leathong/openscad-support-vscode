@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext): void {
             async deserializeWebviewPanel(webviewPanel: vscode.WebviewPanel, state: unknown) {
                 // Reset the webview options so we use latest uri for `localResourceRoots`.
                 webviewPanel.webview.options = getWebviewOptions(context.extensionUri);
-                PreviewPanel.revive(webviewPanel, context.extensionUri);
+                PreviewPanel.revive(webviewPanel, context.extensionUri, previewManager.config);
             }
         });
     }

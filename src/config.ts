@@ -8,6 +8,7 @@
 export interface ScadConfig {
     inlinePreview?: boolean;
     openscadPath?: string;
+    searchPaths?: string;
     lastOpenscadPath?: string;
 }
 

@@ -37,8 +37,8 @@ class MessageItem implements vscode.QuickPickItem {
 
 // Launcher class to handle launching instance of scad
 export class PreviewManager {
+    readonly config: ScadConfig = {};
     private previewStore = new ExternalPreviewStore();
-    private config: ScadConfig = {};
     private extensionPath: vscode.Uri | undefined;
     private inlinePreviews = new Set<string>();
 
@@ -83,7 +83,7 @@ export class PreviewManager {
             // if (DEBUG) console.log(`uri: ${resource}`); // DEBUG
 
             if (this.config.inlinePreview) {
-                PreviewPanel.createOrShow(this.extensionPath!);
+                PreviewPanel.createOrShow(this.extensionPath!, this.config);
                 // If we support multiple preview panels in the future, just add.
                 this.inlinePreviews.clear();
                 this.inlinePreviews.add(resource.fsPath);
@@ -113,6 +113,7 @@ export class PreviewManager {
         // Update configuration
         this.config.openscadPath = config.get<string>('launchPath');
         this.config.inlinePreview = config.get<boolean>('inlinePreview');
+        this.config.searchPaths = config.get<string>("searchPaths");
 
         // Only update openscad path if the path value changes
         if (this.config.lastOpenscadPath !== this.config.openscadPath) {

@@ -1,7 +1,7 @@
 import { fork } from 'child_process';
-import { basename } from 'path';
-import Stream = require('stream');
+import { basename, dirname } from 'path';
 import * as vscode from 'vscode';
+import { ScadConfig } from './config';
 
 export function getWebviewOptions(extensionUri: vscode.Uri): vscode.WebviewOptions {
 	return {
@@ -26,9 +26,13 @@ export class PreviewPanel {
 
 	private readonly _panel: vscode.WebviewPanel;
 	private readonly _extensionUri: vscode.Uri;
+	private readonly _config: ScadConfig = {};
 	private _disposables: vscode.Disposable[] = [];
+	private outputChannel = vscode.window.createOutputChannel(
+		'OpenSCAD-LSP Preview'
+	);
 
-	public static createOrShow(extensionUri: vscode.Uri) {
+	public static createOrShow(extensionUri: vscode.Uri, config: ScadConfig) {
 		const column = vscode.window.activeTextEditor
 			? vscode.ViewColumn.Beside
 			: undefined;
@@ -47,14 +51,15 @@ export class PreviewPanel {
 			getWebviewOptions(extensionUri),
 		);
 
-		PreviewPanel.currentPanel = new PreviewPanel(panel, extensionUri);
+		PreviewPanel.currentPanel = new PreviewPanel(panel, extensionUri, config);
 	}
 
-	public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
-		PreviewPanel.currentPanel = new PreviewPanel(panel, extensionUri);
+	public static revive(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, config: ScadConfig) {
+		PreviewPanel.currentPanel = new PreviewPanel(panel, extensionUri, config);
 	}
 
-	private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri) {
+	private constructor(panel: vscode.WebviewPanel, extensionUri: vscode.Uri, config: ScadConfig) {
+		this._config = config;
 		this._panel = panel;
 		this._extensionUri = extensionUri;
 
@@ -96,7 +101,7 @@ export class PreviewPanel {
 			type: "Model",
 			value: this._panel.webview.asWebviewUri(
 				vscode.Uri.joinPath(this.tmpModelDir, this.previewModelName)
-			).toString() + `?b=${getNonce()}`
+			).toString() + `?b=${new Date().getTime()}`
 		};
 		this._panel.webview.postMessage(message);
 	}
@@ -112,6 +117,11 @@ export class PreviewPanel {
 	private get tmpModelDir() {
 		return vscode.Uri.joinPath(this._extensionUri, 'media', 'preview', 'models');
 	}
+	private get libraryPath() {
+		return [
+			vscode.Uri.joinPath(this._extensionUri, 'openscad-wasm', 'libraries').fsPath,
+		].join(":");
+	}
 	private get renderProcessPath() {
 		return vscode.Uri.joinPath(this._extensionUri, 'out', 'renderer', 'index.js');
 	}
@@ -122,16 +132,27 @@ export class PreviewPanel {
 			title: `rendering ${basename(modelPath)}...`,
 			cancellable: true
 		}, (progress, token) => {
-			const stdout = new Stream();
-			const stderr = new Stream();
+			const logs: {type: "stdout" | "stderr", message: string}[] = [];
 			const controller = new AbortController();
 			const { signal } = controller;
 			const child = fork(this.renderProcessPath.fsPath, [
 				modelPath,
 				this.tmpModelDir.fsPath,
-				this.previewModelName
+				this.previewModelName,
+				this.libraryPath,
+				JSON.stringify(this._config)
 			], {
+				cwd: dirname(modelPath),
 				signal,
+				stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
+			});
+			child.stdout?.on('data', (data) => {
+				this.outputChannel.append('[OpenSCAD] ' + data.toString());
+				logs.push({ type: 'stdout', message: data.toString() });
+			});
+			child.stderr?.on('data', (data) => {
+				this.outputChannel.append('[OpenSCAD] ' + data.toString());
+				logs.push({ type: 'stderr', message: data.toString() });
 			});
 			return new Promise<void>((finished, errored) => {
 				child.on("error", (e) => {
@@ -143,8 +164,7 @@ export class PreviewPanel {
 						this.modelUpdated();
 						finished();
 					} else {
-						// TODO: capture stderr from child process?
-						const message = `OpenSCAD render process ended with non-zero exit code ${code}`;
+						const message = `OpenSCAD render process ended with non-zero exit code ${code}\n${logs.map(l => l.message).join('\n')}`;
 						vscode.window.showErrorMessage(message);
 						errored(new Error(message));
 					}
@@ -162,6 +182,7 @@ export class PreviewPanel {
 
 		// Clean up our resources
 		this._panel.dispose();
+		this.outputChannel.dispose();
 
 		while (this._disposables.length) {
 			const x = this._disposables.pop();
@@ -201,19 +222,10 @@ export class PreviewPanel {
 		const skyboxUri = webview.asWebviewUri(skybox);
 		const axesUri = webview.asWebviewUri(axes);
 
-		// Use a nonce to only allow specific scripts to be run
-		const scriptNonce = getNonce();
-
 		return `<!DOCTYPE html>
 			<html lang="en">
 			<head>
 				<meta charset="UTF-8">
-
-				<!--
-					Use a content security policy to only allow loading images from https or from our extension directory,
-					and only allow scripts that have a specific nonce.
-				-->
-				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; img-src ${webview.cspSource} https:; script-src 'nonce-${scriptNonce}';">
 
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -257,16 +269,8 @@ export class PreviewPanel {
 						<span slot="progress-bar"></span>
 					</model-viewer>
 				</div>
-				<script type="module" nonce="${scriptNonce}" src="${scriptUri}"></script>
+				<script type="module" src="${scriptUri}"></script>
 			</body>
 		</html>`;
 	}
-}
-function getNonce() {
-	let text = '';
-	const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	for (let i = 0; i < 32; i++) {
-		text += possible.charAt(Math.floor(Math.random() * possible.length));
-	}
-	return text;
 }

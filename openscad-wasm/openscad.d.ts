@@ -1,11 +1,16 @@
+export interface EmscriptenRuntime {
+    ENV: Record<string, string>
+}
 export interface InitOptions {
     noInitialRun: boolean;
     print?: (text: string) => void;
     printErr?: (text: string) => void;
+    preRun?: ((runtime: EmscriptenRuntime) => void)[]
 }
 export interface OpenSCAD {
     callMain(args: Array<string>): number;
     FS: FS;
+    // https://emscripten.org/docs/api_reference/module.html#Module.preRun
     locateFile?: (path: string, prefix: string) => string;
     onRuntimeInitialized?: () => void;
 }
